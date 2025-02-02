@@ -31,6 +31,10 @@ class User_Login(View):
         else:
             login(email_id,password)
             return redirect ('/home')
+        
+class Home(View):
+    def get(self,request):
+        return render(request,'index.html')
 
 
 
