@@ -30,6 +30,7 @@ class User_Login(View):
             return JsonResponse({'error':'Incorrect Email ID or Password'})
         else:
             login(email_id,password)
+            print("Hello")
             return redirect ('/home')
 
 
