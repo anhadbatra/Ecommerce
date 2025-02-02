@@ -3,7 +3,6 @@ from django.views import View
 from django.http import JsonResponse
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth import authenticate,login
-
 from .models import User
 
 class User_Register(View):
