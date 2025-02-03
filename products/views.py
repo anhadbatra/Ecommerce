@@ -1,8 +1,9 @@
 from django.shortcuts import render
 from django.views import View
-from main import models
+from models import Product
 from django.http import JsonResponse
 import boto3
+import os
 
 class Products(View):
     def post(self,request):
@@ -17,8 +18,9 @@ class Products(View):
             stock = request.POST.get('stock')
             category = request.POST.get('category')
             material = request.POST.get('material')
+            image = request.FILES.get('image')
             try:
-                product = Products.objects.create(
+                product = Product.objects.create(
                 name=name,
                 brand=brand,
                 product_type=product_type,
@@ -30,7 +32,9 @@ class Products(View):
                 category=category,
                 material=material
                 )
-                Upload_images_to_s3.post(name)
+                upload_image = Upload_images_to_s3.upload(name,image)
+                if not upload_image:
+                    return JsonResponse({'error':'Unable to upload image'})
                 product.save()
             except Exception as e:
                 return JsonResponse({'status': 'error', 'message': str(e)})
@@ -38,8 +42,31 @@ class Products(View):
             return JsonResponse({'status': 'error', 'message': str(e)})
 
 class Upload_images_to_s3():
-    def post(self,name):
+    @staticmethod
+    def post(name,image):
+        s3,bucket_name = connect_S3()
+        try:
+            file_name = "f{name}/{image}"
+            s3.upload_fileobj(
+                image,
+                bucket_name,
+                file_name
+            )
+            return JsonResponse ({'success':'File uploaded successfully'})
+        except Exception as e:
+            return JsonResponse ({'error':'uploading image'})
 
+            
+def connect_S3():
+    BUCKET_NAME = os.environ.get('AWS_BUCKET_NAME')
+    AWS_ACCESS_KEY = os.environ.get('AWS_ACCESS_KEY_ID')
+    AWS_SECRET_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
+    s3 = boto3.client(
+        's3',
+            aws_access_key_id=AWS_ACCESS_KEY,
+            aws_secret_access_key=AWS_SECRET_KEY
+        )
+    return s3 , BUCKET_NAME
 
 
 
