@@ -1,0 +1,18 @@
+from django.db import models
+
+
+class Product(models.Model):
+    name = models.CharField(max_length=100)
+    brand = models.CharField(max_length=20)
+    product_type = models.CharField(max_length=100)
+    size = models.JSONField() 
+    color = models.JSONField()  
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    description = models.TextField()
+    stock = models.PositiveIntegerField()
+    category = models.CharField(max_length=50)
+    material = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+# Create your models here.

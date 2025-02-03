@@ -21,22 +21,6 @@ class User(AbstractBaseUser,PermissionsMixin):
         def __str__(self):
             return self.email
     
-
-class Product(models.Model):
-    name = models.CharField(max_length=100)
-    brand = models.CharField(max_length=20)
-    product_type = models.CharField(max_length=100)
-    size = models.JSONField() 
-    color = models.JSONField()  
-    price = models.DecimalField(max_digits=10, decimal_places=2)
-    description = models.TextField()
-    stock = models.PositiveIntegerField()
-    category = models.CharField(max_length=50)
-    material = models.CharField(max_length=100)
-
-    def __str__(self):
-        return self.name
-
 class Order(models.Model):
     STATUS_CHOICES = [
         ('Pending', 'Pending'),
@@ -62,16 +46,16 @@ class Order(models.Model):
     def __str__(self):
         return "f Order{self.id} placed by {self.user.username}"
     
-    class Review(models.Model):
-        user = models.ForeignKey(User, on_delete=models.CASCADE)
-        product = models.ForeignKey(Product, on_delete=models.CASCADE)
-        rating = models.PositiveIntegerField()
-        comment = models.TextField(blank=True)
-        created_at = models.DateTimeField(auto_now_add=True)
-        verified_purchase = models.BooleanField(default=False)
-        likes = models.PositiveIntegerField(default=0)
+class Review(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    rating = models.PositiveIntegerField()
+    comment = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    verified_purchase = models.BooleanField(default=False)
+    likes = models.PositiveIntegerField(default=0)
 
-        def __str__(self):
-            return f"Review by {self.user.username} for {self.product.name}"
+    def __str__(self):
+        return f"Review by {self.user.username} for {self.product.name}"
     
 

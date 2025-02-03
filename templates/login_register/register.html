@@ -1,0 +1,27 @@
+{% include '../header.html' %}
+
+<body>
+<div class="container_login">
+    <h2>Login</h2>
+    <form action="/login" method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="first-name">First Name</label>
+            <input type="text" id="first_name" name="first_name" required>
+        </div>
+        <div class="form-group">
+            <label for="last-name">Last Name</label>
+            <input type="text" id="last_name" name="last_name" required>
+        </div>
+        <div class="form-group">
+            <label for="email">Email ID</label>
+            <input type="email" id="emailid" name="emailid" required>
+        </div>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+        <button type="submit" class="btn">Login</button>
+    </form>
+</div>
+</body>
