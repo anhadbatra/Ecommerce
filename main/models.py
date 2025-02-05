@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser,PermissionsMixin
 from .manager import CustomUserModel
 from django.utils import timezone
+from products.models import Product
 
 class User(AbstractBaseUser,PermissionsMixin):
         email = models.EmailField(unique=True)
