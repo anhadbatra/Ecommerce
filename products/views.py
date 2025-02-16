@@ -55,6 +55,8 @@ class Upload_images_to_s3():
             return JsonResponse ({'success':'File uploaded successfully'})
         except Exception as e:
             return JsonResponse ({'error':'uploading image'})
+        
+
 
             
 def connect_S3():

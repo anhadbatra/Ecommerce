@@ -1,4 +1,5 @@
 from django.db import models
+from .storage_backends import MediaStorage
 
 
 class Product(models.Model):
@@ -12,6 +13,7 @@ class Product(models.Model):
     stock = models.PositiveIntegerField()
     category = models.CharField(max_length=50)
     material = models.CharField(max_length=100)
+    image_main = models.FileField(storage=MediaStorage())
 
     def __str__(self):
         return self.name
