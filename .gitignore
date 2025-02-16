@@ -4,5 +4,6 @@
 .env
 *.log
 mydatabase
+staticfiles
 
 

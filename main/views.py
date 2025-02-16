@@ -27,11 +27,11 @@ class User_Login(View):
         password = request.POST.get('password')
         if not email_id and password:
             return JsonResponse({'error':'Email or Password is required'})
-        user = authenticate(request,email_id,password)
+        user = authenticate(request,username=email_id,password=password)
         if user is None:
             return JsonResponse({'error':'Incorrect Email ID or Password'})
         else:
-            login(email_id,password)
+            login(request,user)
             return redirect ('/')
     def get(self,request):
         return render(request,'login_register/login.html')

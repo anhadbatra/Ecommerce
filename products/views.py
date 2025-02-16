@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.views import View
-from models import Product
+from .models import Product
 from django.http import JsonResponse
 import boto3
 import os
@@ -40,6 +40,17 @@ class Products(View):
                 return JsonResponse({'status': 'error', 'message': str(e)})
         except Exception as e:
             return JsonResponse({'status': 'error', 'message': str(e)})
+    def get(self,request):
+        product = Product.objects.all()
+        products = {'product':product}
+        return render(request,'products/products.html',products)
+
+class Product_Details(View):
+    def get(self,request,id):
+        product_detail = Product.objects.filter(pk=id)
+        product_detail_get = {'product_detail': product_detail}
+        return render(request,'products/product_details.html',product_detail_get)
+
 
 class Upload_images_to_s3():
     @staticmethod

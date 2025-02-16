@@ -1,0 +1,149 @@
+{% include '../header.html' %}
+
+{% block content %}
+  <style>
+    /* Container for the sidebar and product list */
+    .container {
+      display: flex;
+      margin: 20px;
+    }
+    /* Sidebar filter styling */
+    .filter-sidebar {
+      width: 25%;
+      padding: 15px;
+      border-right: 1px solid #ccc;
+    }
+    .filter-sidebar h3 {
+      margin-bottom: 15px;
+    }
+    .filter-sidebar form div {
+      margin-bottom: 10px;
+    }
+    .filter-sidebar label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+    .filter-sidebar input,
+    .filter-sidebar select {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    .filter-sidebar button {
+      width: 100%;
+      padding: 10px;
+      background-color: #007bff;
+      border: none;
+      color: #fff;
+      font-size: 16px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .filter-sidebar button:hover {
+      background-color: #0056b3;
+    }
+    /* Product list styling */
+    .product-list {
+      width: 75%;
+      padding: 15px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+    .product {
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      padding: 10px;
+      width: calc(33.333% - 20px); /* 3 products per row with a gap */
+      box-sizing: border-box;
+    }
+    .product img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 4px;
+    }
+    .product h4 {
+      margin: 10px 0 5px;
+    }
+    .product p {
+      margin: 5px 0;
+    }
+    .product a {
+      text-decoration: none;
+      color: #007bff;
+      font-weight: bold;
+    }
+    .product a:hover {
+      text-decoration: underline;
+    }
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .product {
+        width: calc(50% - 20px);
+      }
+    }
+    @media (max-width: 480px) {
+      .container {
+        flex-direction: column;
+      }
+      .filter-sidebar,
+      .product-list {
+        width: 100%;
+      }
+      .product {
+        width: 100%;
+      }
+    }
+  </style>
+
+  <div class="container">
+    <!-- Sidebar Filter -->
+    <div class="filter-sidebar">
+      <h3>Filters</h3>
+      <form method="get" action="">
+        <div>
+          <label for="category">Category:</label>
+          <select name="category" id="category">
+            <option value="">All Categories</option>
+            {% for category in categories %}
+              <option value="{{ category.id }}">{{ category.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div>
+          <label for="price_min">Min Price:</label>
+          <input type="number" id="price_min" name="price_min" step="0.01" placeholder="e.g. 10.00">
+        </div>
+        <div>
+          <label for="price_max">Max Price:</label>
+          <input type="number" id="price_max" name="price_max" step="0.01" placeholder="e.g. 100.00">
+        </div>
+        <div>
+          <button type="submit">Apply Filters</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Product Listing -->
+    <div class="product-list">
+      {% if product %}
+        {% for p in product %}
+          <div class="product">
+            {% if product.image_url %}
+            <img src="{{ p.image }}" alt="{{ product.name }}">
+            {% endif %}
+            <h4>{{ p.name }}</h4>
+            <p>Price: ${{ p.price }}</p>
+            <a href="product_detail/{{ p.id }}">View Details</a>
+
+
+          </div>
+        {% endfor %}
+      {% else %}
+        <p>No products available.</p>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}
