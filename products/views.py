@@ -47,8 +47,9 @@ class Products(View):
 
 class Product_Details(View):
     def get(self,request,id):
-        product_detail = Product.objects.filter(pk=id)
+        product_detail = Product.objects.get(pk=id)
         product_detail_get = {'product_detail': product_detail}
+        print(product_detail_get)
         return render(request,'products/product_details.html',product_detail_get)
 
 

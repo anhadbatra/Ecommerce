@@ -1,5 +1,6 @@
 from django.db import models
 from .storage_backends import MediaStorage
+from  main.models import User
 
 
 class Product(models.Model):
@@ -17,4 +18,20 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
+    
+class Cart(models.Model):
+    cart_id = models.CharField(primary_key=True)
+    total = models.DecimalField(max_digits=9,decimal_places=2)
+    quantity = models.IntegerField()
+    user = models.OneToOneField(User)
+    def __str__(self):
+        return self.name
+    
+class CartItem(models.Model):
+    cart = models.ForeignKey(Cart,on_delete=models.CASCADE)
+    products = models.ForeignKey(Product,on_delete=models.CASCADE)
+    product_quantity = models.IntegerField(default=0)
+    user = models.OneToOneField(User)
+
+
 # Create your models here.

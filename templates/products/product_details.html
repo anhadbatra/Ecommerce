@@ -37,14 +37,17 @@
 <body>
   <div class="container">
     <!-- Product Image -->
-    <img class="product-image" src="{{ product.image }}" alt="{{ product.name }}">
-    
+    <img class="product-image" src="{{ product_detail.image }}" alt="{{ product.name }}">
     <!-- Product Details -->
     <div class="product-info">
-      <h1>{{ product.name }}</h1>
-      <p class="price">{{ product.price }}</p>
-      <p class="description">{{ product.description }}</p>
+      {% if product_detail %}
+      <h1>{{ product_detail.name }}</h1>
+      <p class="price">{{ product_detail.price }}</p>
+      <p class="description">{{ product_detail.description }}</p>
       <!-- You can add more details like reviews, specifications, etc. -->
+      {% else %}
+      <p>No products available.</p>
+    {% endif %}
     </div>
   </div>
 </body>
