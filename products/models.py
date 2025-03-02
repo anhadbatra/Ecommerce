@@ -1,6 +1,5 @@
 from django.db import models
 from .storage_backends import MediaStorage
-from  main.models import User
 
 
 class Product(models.Model):
@@ -20,18 +19,34 @@ class Product(models.Model):
         return self.name
     
 class Cart(models.Model):
-    cart_id = models.CharField(primary_key=True)
+    cart_id = models.CharField(primary_key=True,max_length=5)
     total = models.DecimalField(max_digits=9,decimal_places=2)
     quantity = models.IntegerField()
-    user = models.OneToOneField(User)
-    def __str__(self):
-        return self.name
+    products = models.JSONField(default=tuple)
+    user = models.OneToOneField('main.User', on_delete=models.CASCADE)
     
 class CartItem(models.Model):
     cart = models.ForeignKey(Cart,on_delete=models.CASCADE)
     products = models.ForeignKey(Product,on_delete=models.CASCADE)
     product_quantity = models.IntegerField(default=0)
-    user = models.OneToOneField(User)
+    user = models.ForeignKey('main.User',on_delete=models.CASCADE)
+
+class Favourites(models.Model):
+    products = models.ForeignKey(Product,on_delete=models.CASCADE)
+    user = models.ForeignKey('main.User', on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ('user', 'products')
+
+    def __str__(self):
+        return f"{self.user.username} - {self.products.name}"
+
 
 
 # Create your models here.
+
+class Orders(models.Model):
+    order_number = models.IntegerField(unique=True)
+    cart = models.ForeignKey(Cart,on_delete=models.CASCADE)
+    payment_status = models.IntegerField(default=0)
+    payment_date = models.DateTimeField(auto_now=True)

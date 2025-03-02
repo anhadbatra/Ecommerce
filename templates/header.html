@@ -24,23 +24,6 @@
 </head>
 
 <body>
-  <div class="search-box bg-dark position-relative">
-    <div class="search-wrap">
-      <div class="close-button">
-        <svg class="close" style="fill: white;">
-          <use xlink:href="#close"></use>
-        </svg>
-      </div>
-      <form id="search-form" class="text-lg-center text-md-left pt-3" action="index.html" method="get">
-        <input type="text" class="search-input" placeholder="Search...">
-        <svg class="search">
-          <use xlink:href="#search"></use>
-        </svg>
-      </form>
-    </div>
-  </div>
-
-  <!-- quick view -->
   <div class="modal fade" id="modaltoggle" aria-hidden="true" tabindex="-1">
     <div class="modal-dialog modal-fullscreen-md-down modal-md modal-dialog-centered">
       <div class="modal-content">
@@ -235,60 +218,9 @@
   </div>
   <!-- cart view -->
 <header id="header" class="site-header text-black">
-    <div class="header-top border-bottom py-2">
-      <div class="container-lg">
-        <div class="row justify-content-evenly">
-          <div class="col">
-            <ul class="social-links list-unstyled d-flex m-0">
-              <li class="pe-2">
-                <a href="#">
-                  <svg class="facebook" width="20" height="20">
-                    <use xlink:href="#facebook"></use>
-                  </svg>
-                </a>
-              </li>
-              <li class="pe-2">
-                <a href="#">
-                  <svg class="instagram" width="20" height="20">
-                    <use xlink:href="#instagram"></use>
-                  </svg>
-                </a>
-              </li>
-              <li class="pe-2">
-                <a href="#">
-                  <svg class="youtube" width="20" height="20">
-                    <use xlink:href="#youtube"></use>
-                  </svg>
-                </a>
-              </li>
-              <li>
-                <a href="#">
-                  <svg class="pinterest" width="20" height="20">
-                    <use xlink:href="#pinterest"></use>
-                  </svg>
-                </a>
-              </li>
-            </ul>
-          </div>
-          <div class="col">
-            <ul class="d-flex justify-content-end gap-3 list-unstyled m-0">
-              <li>
-                <a href="#">Contact</a>
-              </li>
-              <li>
-                <a href="#">Cart</a>
-              </li>
-              <li>
-                <a href="#">Login</a>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
     <nav id="header-nav" class="navbar navbar-expand-lg">
       <div class="container-lg">
-        <a class="navbar-brand" href="index.html">
+        <a class="navbar-brand" href="/">
           <img src="images/main-logo.png" class="logo" alt="logo">
         </a>
         <button class="navbar-toggler d-flex d-lg-none order-3 border-0 p-1 ms-2" type="button" data-bs-toggle="offcanvas"
@@ -310,56 +242,19 @@
               <li class="nav-item dropdown">
                 <a class="nav-link me-5 active dropdown-toggle border-0" href="#" data-bs-toggle="dropdown"
                   aria-expanded="false">Home</a>
-                <ul class="dropdown-menu fw-bold">
-                  <li>
-                    <a href="index.html" class="dropdown-item">Home V1</a>
-                  </li>
-                  <li>
-                    <a href="index.html" class="dropdown-item">Home V2 </a>
-                  </li>
-                </ul>
               </li>
               <li class="nav-item">
-                <a class="nav-link me-5" href="#">Men</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link me-5" href="#">Women</a>
+                <a class="nav-link me-5" href="/products">Products</a>
               </li>
               <li class="nav-item dropdown">
                 <a class="nav-link me-5 active dropdown-toggle border-0" href="#" data-bs-toggle="dropdown"
                   aria-expanded="false">Page</a>
-                <ul class="dropdown-menu fw-bold">
-                  <li>
-                    <a href="index.html" class="dropdown-item">About Us </a>
-                  </li>
-                  <li>
-                    <a class="dropdown-item" href="index.html">Shop </a>
-                  </li>
-                  <li>
-                    <a class="dropdown-item" href="index.html">Blog </a>
-                  </li>
-                  <li>
-                    <a class="dropdown-item" href="index.html">Single Product </a>
-                  </li>
-                  <li>
-                    <a class="dropdown-item" href="index.html">Single Post </a>
-                  </li>
-                  <li>
-                    <a class="dropdown-item" href="index.html">Styles </a>
-                  </li>
-                  <li>
-                    <a href="#" data-bs-toggle="modal" data-bs-target="#modallong" class="dropdown-item">cart</a>
-                  </li>
-                  <li>
-                    <a href="#" data-bs-toggle="modal" data-bs-target="#modallogin" class="dropdown-item">Login</a>
-                  </li>
-                </ul>
               </li>
               <li class="nav-item">
-                <a class="nav-link me-5" href="index.html">Shop</a>
+                <a class="nav-link me-5" href="index.html">Login</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link me-5" href="#">Sale</a>
+                <a class="nav-link me-5" href="#">Register</a>
               </li>
             </ul>
           </div>

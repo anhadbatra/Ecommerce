@@ -7,6 +7,54 @@
       display: flex;
       margin: 20px;
     }
+    .search-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+    .search-input {
+            padding: 10px;
+            width: 300px;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .search-input:focus {
+            border-color: #007BFF;
+        }
+
+        .search-button {
+            padding: 10px 20px;
+            margin-left: 10px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .search-button:hover {
+            background-color: #0056b3;
+        }
+
+        .search-result {
+            margin: 20px;
+            text-align: center;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            display: none;
+        }
+
+        .error {
+            color: red;
+        }
     /* Sidebar filter styling */
     .filter-sidebar {
       width: 25%;
@@ -97,6 +145,14 @@
       }
     }
   </style>
+  <div class="search-container">
+    <!-- Form for search input -->
+    <form id="searchForm" method="POST">
+        {% csrf_token %}
+        <input type="text" class="search-input" name="prompt" placeholder="Enter your search term..." required />
+        <button type="submit" class="search-button">Search</button>
+    </form>
+</div>
 
   <div class="container">
     <!-- Sidebar Filter -->
@@ -146,4 +202,26 @@
       {% endif %}
     </div>
   </div>
+<script>
+document.getElementById('searchForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            const form = event.target;
+            const searchInput = form.querySelector('input[name="prompt"]').value;
+            const resultDiv = document.getElementById('searchResult');
+            const url = "/search_query"; // Replace with your view's URL name
+            const csrftoken = form.querySelector('[name=csrfmiddlewaretoken]').value;
+            const formData = new FormData();
+            formData.append('prompt', searchInput);
+            formData.append('csrfmiddlewaretoken', csrftoken);
+            fetch(url, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': csrftoken // Django requires this for POST requests
+                }
+            })
+          });
+  </script>
 {% endblock %}
+{% include 'footer.html' %}
