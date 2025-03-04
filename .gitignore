@@ -1,5 +1,9 @@
 .venv
 **migrations
 **__pycache__
+.env
+*.log
+mydatabase
+staticfiles
 
 

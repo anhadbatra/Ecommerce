@@ -1,0 +1,55 @@
+{% include '../header.html' %}
+
+{% block content %}
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background-color: #f2f2f2;
+    }
+    .container {
+      max-width: 900px;
+      margin: 30px auto;
+      background: #fff;
+      padding: 20px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+    .product-image {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-bottom: 1px solid #ddd;
+      margin-bottom: 20px;
+    }
+    .product-info h1 {
+      margin-top: 0;
+    }
+    .price {
+      color: #e91e63;
+      font-size: 1.5em;
+      margin: 10px 0;
+    }
+    .description {
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Product Image -->
+    <img class="product-image" src="{{ product_detail.image }}" alt="{{ product.name }}">
+    <!-- Product Details -->
+    <div class="product-info">
+      {% if product_detail %}
+      <h1>{{ product_detail.name }}</h1>
+      <p class="price">{{ product_detail.price }}</p>
+      <p class="description">{{ product_detail.description }}</p>
+      <!-- You can add more details like reviews, specifications, etc. -->
+      {% else %}
+      <p>No products available.</p>
+    {% endif %}
+    </div>
+  </div>
+</body>
+</html>
+{% endblock %}
