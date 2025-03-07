@@ -47,17 +47,6 @@ class Order(models.Model):
     def __str__(self):
         return "f Order{self.id} placed by {self.user.username}"
     
-class Review(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    rating = models.PositiveIntegerField()
-    comment = models.TextField(blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    verified_purchase = models.BooleanField(default=False)
-    likes = models.PositiveIntegerField(default=0)
-
-    def __str__(self):
-        return f"Review by {self.user.username} for {self.product.name}"
     
 
  

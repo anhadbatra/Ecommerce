@@ -2,10 +2,9 @@ from products.models import Product
 from django.views import View
 from langchain_ollama.llms import OllamaLLM
 from langchain.chains.llm import LLMChain
-from django.core.serializers import serialize
 from django.core import serializers
 from langchain.prompts import PromptTemplate
-import json
+
 
 
 def prompt_model(data,prompt):

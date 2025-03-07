@@ -5,6 +5,8 @@ from django.http import JsonResponse
 import boto3
 import os
 from django.conf import settings
+import json
+from django.http import JsonResponse
 import stripe
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
@@ -32,6 +34,14 @@ class Product_Details(View):
         product_detail_get = {'product_detail': product_detail}
         return render(request,'products/product_details.html',product_detail_get)
 
+class Add_to_Cart(View):
+    def post(self, request):
+        data = json.loads(request.body)
+        product_id_from_body = data.get('product_id')
+        get_user = request.session.get('user')
+        
+
+        
 class Cart_Checkout(View):
     def post(request):
         product_list = request.POST.get('product_list')
