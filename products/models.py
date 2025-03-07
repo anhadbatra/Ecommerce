@@ -18,18 +18,17 @@ class Product(models.Model):
     def __str__(self):
         return self.name
     
+class CartItem(models.Model):
+    products = models.JSONField(default=tuple)
+    product_quantity = models.IntegerField(default=1)
+    user = models.ForeignKey('main.User',on_delete=models.CASCADE)
+
 class Cart(models.Model):
-    cart_id = models.CharField(primary_key=True,max_length=5)
+    cart_id = models.ForeignKey(CartItem,on_delete=models.CASCADE)
     total = models.DecimalField(max_digits=9,decimal_places=2)
     quantity = models.IntegerField()
     products = models.JSONField(default=tuple)
     user = models.OneToOneField('main.User', on_delete=models.CASCADE)
-    
-class CartItem(models.Model):
-    cart = models.ForeignKey(Cart,on_delete=models.CASCADE)
-    products = models.ForeignKey(Product,on_delete=models.CASCADE)
-    product_quantity = models.IntegerField(default=0)
-    user = models.ForeignKey('main.User',on_delete=models.CASCADE)
 
 class Favourites(models.Model):
     products = models.ForeignKey(Product,on_delete=models.CASCADE)
