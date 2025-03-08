@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.views import View
-from .models import Product , Favourites , Cart , Orders
+from .models import Product , Favourites , Cart , Orders , CartItem
 from django.http import JsonResponse
 import boto3
 import os
@@ -29,17 +29,23 @@ class Products(View):
         return render(request,'products/products.html',products)
 
 class Product_Details(View):
-    def get(request,id):
+    def get(self,request,id):
         product_detail = Product.objects.get(pk=id)
         product_detail_get = {'product_detail': product_detail}
         return render(request,'products/product_details.html',product_detail_get)
 
 class Add_to_Cart(View):
     def post(self, request):
+        products = []
         data = json.loads(request.body)
-        product_id_from_body = data.get('product_id')
+        product_id = data.get('product_id')
         get_user = request.session.get('user')
-        
+        cart_item, created = CartItem.objects.get_or_create(
+                user=get_user,
+                defaults={'products': [product_id]}  # Store product_id in a list/tuple
+            )
+        if not created:
+            current_products = list(cart_item.products)
 
         
 class Cart_Checkout(View):
