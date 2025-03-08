@@ -187,18 +187,10 @@
       {% if product %}
         {% for p in product %}
           <div class="product">
-            <img src="p.image" alt="{{ p.name }}">
+            <img src="{{ p.image_main.url }}" alt="{{ p.name }}">
             <h4>{{ p.name }}</h4>
             <p>Price: ${{ p.price }}</p>
             <a href="product_detail/{{ p.id }}">View Details</a>
-            {% if user.is_authenticated %}
-            <button 
-                type="submit" 
-                class="add-to-cart" 
-                data-product-id="{{ p.id }}"
-                style="background-color: #4CAF50; color: white; padding: 8px 16px; border: none; margin-top: 10px; cursor: pointer;">Add to Cart
-            </button>
-            {% endif %}
             </div>
         {% endfor %}
       {% else %}
@@ -226,34 +218,12 @@ document.getElementById('searchForm').addEventListener('submit', function(event)
                 }
             })
           });
-    function getCsrfToken() {
-    return document.querySelector('input[name="csrfmiddlewaretoken"]').value;
-    }
-    document.addEventListener('DOMContentLoaded', function() {
-        const addToCartButtons = document.querySelectorAll('.add-to-cart');
-        
-        addToCartButtons.forEach(button => {
-            button.addEventListener('click', function(event) {
-                // Get the product ID from the data attribute
-                const productId = this.getAttribute('data-product-id');
-                const url = `/add_to_cart/${productId}/`;
-
-                fetch(url, {
-                method: 'POST',
-                body: JSON.stringify({product_id : productId}),
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': '{{ csrf_token }}' // Django requires this for POST requests
-                }
-            })
 
 
               
                 
 
-            });
-        });
-    });
+
 
   </script>
 {% endblock %}
