@@ -19,8 +19,7 @@ class Product(models.Model):
         return self.name
     
 class CartItem(models.Model):
-    products = models.JSONField(default=list)
-    product_quantity = models.IntegerField(default=1)
+    products = models.JSONField(default=dict)
     user = models.ForeignKey('main.User',on_delete=models.CASCADE)
 
 class Cart(models.Model):

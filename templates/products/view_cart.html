@@ -1,0 +1,56 @@
+{% include '../header.html' %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Cart</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .cart-container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .cart-item {
+            border-bottom: 1px solid #ddd;
+            padding: 10px 0;
+            display: flex;
+            justify-content: space-between;
+        }
+        .error {
+            color: red;
+            text-align: center;
+        }
+        .empty {
+            text-align: center;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="cart-container">
+        <h1>Your Cart</h1>
+        
+        {% if error %}
+            <p class="error">{{ error }}</p>
+        {% endif %}
+
+        {% if cart_items %}
+            {% for product_id, quantity in cart_items.items %}
+                <div class="cart-item">
+                    <span>Product ID: {{ product_id }}</span>
+                    <span>Quantity: {{ quantity }}</span>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p class="empty">Your cart is empty.</p>
+        {% endif %}
+    </div>
+</body>
+</html>
+{% endblock %}

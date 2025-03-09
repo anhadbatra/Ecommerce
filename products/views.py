@@ -39,32 +39,28 @@ class Add_to_Cart(View):
         products = []
         data = json.loads(request.body)
         product_id = data.get('product_id')
-        get_user = request.session.get('user')
+        print(product_id)
+        get_user = request.user
+        print(get_user)
         cart_item, created = CartItem.objects.get_or_create(
                 user=get_user,
-                defaults={'products': [product_id]}  # Store product_id in a list/tuple
+                defaults={'products':{product_id:1}}  # Store product_id in a list/tuple
             )
         if not created:
-            current_products = list(cart_item.products)
+                current_products = cart_item.products
+                current_products[product_id] = current_products.get(product_id, 0) + 1
+                cart_item.products = current_products
+                cart_item.save()
 
+class Cart_View(View):
+    def get(self,request):
+        get_user = request.user
+        products_dict = CartItem.objects.filter(user=get_user)
+        product_keys = []
+
+        for product in products_dict:
+            product_keys.extend(product.products.keys())
         
-class Cart_Checkout(View):
-    def post(request):
-        product_list = request.POST.get('product_list')
-        total_amount = request.POST.get('amount')
-        quantity = request.POST.get('quantity')
-        user = request.session.get('user')
-        Cart_Store = Cart.objects.create(product_list=product_list,total_amount=total_amount,quantity=quantity,user=user)
-        Cart_Store.save()
-        return render(request,'products/checkout.html')
-
-    def get(request):
-        user = request.session.get('user')
-        cart_details = Cart.objects.get(user=user)
-        cart_details_get = {'cart_details'}
-
-
-
 class Upload_images_to_s3():
     @staticmethod
     def post(name,image):
