@@ -82,7 +82,7 @@
             button.addEventListener('click', function(event) {
                 // Get the product ID from the data attribute
                 const productId = this.getAttribute('data-product-id');
-                const url = `/add_to_cart/${productId}/`;
+                const url = `/add_to_cart`;
 
                 fetch(url, {
                 method: 'POST',
