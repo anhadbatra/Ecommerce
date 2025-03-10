@@ -2,7 +2,7 @@ from django.shortcuts import render,redirect
 from django.views import View
 from django.http import JsonResponse
 from django.contrib.auth.hashers import make_password
-from django.contrib.auth import authenticate,login
+from django.contrib.auth import authenticate,login,logout
 from .models import User
 
 class User_Register(View):
@@ -38,10 +38,15 @@ class User_Login(View):
         
 class Home(View):
     def get(self,request):
-        return render(request,'index.html')
+        user = request.user
+        user = {'user':user}
+        return render(request,'index.html',{'user': request.user})
 
 
-
+class LogoutView(View):
+    def get(self, request):
+        logout(request)
+        return redirect('/')
 
 
 # Create your views here.
