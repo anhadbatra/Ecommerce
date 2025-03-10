@@ -57,9 +57,12 @@ class Cart_View(View):
         get_user = request.user
         products_dict = CartItem.objects.filter(user=get_user)
         product_keys = []
+        quantity = []
 
         for product in products_dict:
             product_keys.extend(product.products.keys())
+            quantity.extend(product.products.values())
+        print(product_keys,quantity)
         
 class Upload_images_to_s3():
     @staticmethod
@@ -76,12 +79,31 @@ class Upload_images_to_s3():
         except Exception as e:
             return JsonResponse ({'error':'uploading image'})
 
-class Favourites(View):
-    def post(request,id):
-        result = Product.objects.get(id=id)
-        favorite, created = Favourites.objects.get_or_create(user=request.user, products=result)
-        if not created:
-            favorite.delete()
+class Favourites_product(View):
+    def post(self,request):
+        user = request.user
+        data = json.loads(request.body)
+        product_id = data.get('product_id')
+        favourite, added = Favourites.objects.get_or_create(
+                user=user,
+                defaults={'products': []}
+        )
+        if product_id in favourite.products: # if the product id is already present
+            favourite.products.remove(product_id)
+            favourite.save()
+            return JsonResponse({
+                'status':'removed'
+            })
+        else:
+            favourite.products.append(product_id) # else it will append into new
+            favourite.save()
+            return JsonResponse({
+                'status':'added'
+            })
+
+            
+        
+
         
 class CheckoutSession(View):
     def post(*args,**kwargs):

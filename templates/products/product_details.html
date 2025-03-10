@@ -4,98 +4,138 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            background-color: #f2f2f2;
-        }
-        .container {
-            max-width: 900px;
-            margin: 30px auto;
-            background: #fff;
-            padding: 20px;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-        }
-        .product-image {
-            width: 300px;           /* Fixed width for smaller size */
-            height: auto;          /* Maintain aspect ratio */
-            display: block;        /* Ensure it behaves as a block element */
-            border-bottom: 1px solid #ddd;
-            margin-bottom: 20px;   /* Space below image */
-            margin-left: auto;     /* Center the image */
-            margin-right: auto;
-        }
-        .product-info h1 {
-            margin-top: 0;
-        }
-        .price {
-            color: #e91e63;
-            font-size: 1.5em;
-            margin: 10px 0;
-        }
-        .description {
-            line-height: 1.6;
-        }
-    </style>
+        <meta charset="UTF-8">
+        <title>{{ product_detail.name|default:"Product Detail" }}</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+        <style>
+            .favorite-heart {
+                cursor: pointer;
+                font-size: 14px;
+                color: #666;
+                transition: color 0.3s ease;
+                margin-left: 10px;
+            }
+            .favorite-heart:hover {
+                color: #ff0000;
+            }
+            .favorite-heart.active {
+                color: #ff0000;
+            }
+            body {
+                font-family: Arial, sans-serif;
+                margin: 0;
+                background-color: #f2f2f2;
+            }
+            .container {
+                max-width: 900px;
+                margin: 30px auto;
+                background: #fff;
+                padding: 20px;
+                box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            }
+            .product-image {
+                width: 300px;
+                height: auto;
+                display: block;
+                border-bottom: 1px solid #ddd;
+                margin-bottom: 20px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+            .product-info h1 {
+                margin-top: 0;
+            }
+            .price {
+                color: #e91e63;
+                font-size: 1.5em;
+                margin: 10px 0;
+            }
+            .description {
+                line-height: 1.6;
+            }
+</style>
 </head>
 <body>
     <div class="container">
         {% if product_detail %}
-            <!-- Product Details Section -->
             <div class="product-info">
-                <!-- Product Image (Smaller) -->
                 <img class="product-image" src="{{ product_detail.image_main.url }}" alt="{{ product_detail.name }}">
-
-                <!-- Product Information -->
                 <h1>{{ product_detail.name }}</h1>
                 <p class="price">{{ product_detail.price }}</p>
                 <p class="description">{{ product_detail.description }}</p>
-                <!-- Optional: Add to Cart Button -->
+                
                 {% if user.is_authenticated %}
-                <button 
-                    type="submit" 
-                    class="add-to-cart" 
-                    data-product-id="{{ product_detail.id }}"
-                    style="background-color: #4CAF50; color: white; padding: 8px 16px; border: none; margin-top: 10px; cursor: pointer;">Add to Cart
-                </button>
+                    <button 
+                        type="button" 
+                        class="add-to-cart" 
+                        data-product-id="{{ product_detail.id }}"
+                        style="background-color: #4CAF50; color: white; padding: 8px 16px; border: none; margin-top: 10px; cursor: pointer;">Add to Cart
+                    </button>
+                    <span 
+                    class="favorite-heart" 
+                    data-item="{{ product_detail.id }}"
+                    title="Add to Favorites"
+    >
+                <i class="{% if product_detail.id|stringformat:'s' in user.favourites.products|default:'[]' %}fas{% else %}far{% endif %} fa-heart"></i>
+                </span>
                 {% endif %}
             </div>
         {% else %}
-            <!-- No Product Available Message -->
             <p>No products available.</p>
         {% endif %}
     </div>
-
-    <!-- JavaScript for Add-to-Cart Functionality -->
     <script>
           function getCsrfToken() {
           return document.querySelector('input[name="csrfmiddlewaretoken"]').value;
     }
-        // Function to get CSRF token
-
-        // Event listener for DOM content loaded
         document.addEventListener('DOMContentLoaded', function() {
         const addToCartButtons = document.querySelectorAll('.add-to-cart');
         
         addToCartButtons.forEach(button => {
             button.addEventListener('click', function(event) {
-                // Get the product ID from the data attribute
                 const productId = this.getAttribute('data-product-id');
                 const url = `/add_to_cart`;
-
                 fetch(url, {
                 method: 'POST',
                 body: JSON.stringify({product_id : productId}),
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-CSRFToken': '{{ csrf_token }}' // Django requires this for POST requests
+                    'X-CSRFToken': '{{ csrf_token }}' 
                 }
             })
           });
+        });
+    });
+    const favouriteButtons = document.querySelectorAll('.favorite-heart');
+    favouriteButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const productId = this.getAttribute('data-item');
+            fetch('/add_to_favourites', {
+                method: 'POST',
+                body: JSON.stringify({ product_id: productId }),
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                const icon = button.querySelector('i');
+                if (data.status === 'added') {
+                    button.classList.add('active');
+                    icon.classList.remove('far');
+                    icon.classList.add('fas')
+                } else if (data.status === 'removed') {
+                    button.classList.remove('active');
+                    icon.classList.remove('fas')
+                    icon.classList.add('far')
+                }
+            })
+            .catch(error => console.error('Favourite error:', error));
         });
     });
     </script>
 </body>
 </html>
 {% endblock %}
+{% include 'footer.html' %}

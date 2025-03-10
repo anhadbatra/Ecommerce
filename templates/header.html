@@ -1,7 +1,6 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <title>Stylish - Shoes Online Store HTML Template</title>
   <meta charset="utf-8">
@@ -12,216 +11,20 @@
   <meta name="author" content="TemplatesJungle">
   <meta name="keywords" content="Online Store">
   <meta name="description" content="Stylish - Shoes Online Store HTML Template">
-
   <link rel="stylesheet" href="{% static 'css/vendor.css'%}">
   <link rel="stylesheet" type="text/css" href="{% static 'css/style.css'%}">
-
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
     href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,900;1,900&family=Source+Sans+Pro:wght@400;600;700;900&display=swap"
     rel="stylesheet">
 </head>
-
 <body>
-  <div class="modal fade" id="modaltoggle" aria-hidden="true" tabindex="-1">
-    <div class="modal-dialog modal-fullscreen-md-down modal-md modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-body">
-          <div class="col-lg-12 col-md-12 me-3">
-            <div class="image-holder">
-              <img src="images/summary-item1.jpg" alt="Shoes">
-            </div>
-          </div>
-          <div class="col-lg-12 col-md-12">
-            <div class="summary">
-              <div class="summary-content fs-6">
-                <div class="product-header d-flex justify-content-between mt-4">
-                  <h3 class="display-7">Running Shoes For Men</h3>
-                  <div class="modal-close-btn">
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                    </button>
-                  </div>
-                </div>
-                <span class="product-price fs-3">$99</span>
-                <div class="product-details">
-                  <p class="fs-7">Buy good shoes and a good mattress, because when you're not in one you're in the
-                    other. With four pairs of shoes, I can travel the world.</p>
-                </div>
-                <ul class="select">
-                  <li>
-                    <strong>Colour Shown:</strong> Red, White, Black
-                  </li>
-                  <li>
-                    <strong>Style:</strong> SM3018-100
-                  </li>
-                </ul>
-                <div class="variations-form shopify-cart">
-                  <div class="row">
-                    <div class="col-md-6">
-                      <div class="quantity d-flex pb-4">
-                        <div
-                          class="qty-number align-top qty-number-plus d-flex justify-content-center align-items-center text-center">
-                          <span class="increase-qty plus">
-                            <svg class="plus">
-                              <use xlink:href="#plus"></use>
-                            </svg>
-                          </span>
-                        </div>
-                        <input type="number" id="quantity_001" class="input-text text-center" step="1" min="1" name="quantity" value="1" title="Qty">
-                        <div
-                          class="qty-number qty-number-minus d-flex justify-content-center align-items-center text-center">
-                          <span class="increase-qty minus">
-                            <svg class="minus">
-                              <use xlink:href="#minus"></use>
-                            </svg>
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-6">
-                      <a rel="nofollow" data-no-instant="" href="#" class="out-stock button">Out of stock</a>
-                      <button type="submit" class="btn btn-medium btn-black hvr-sweep-to-right">Add to cart</button>
-                    </div>
-                  </div>
-                </div>
-                <!-- variations-form -->
-                <div class="categories d-flex flex-wrap pt-3">
-                  <strong class="pe-2">Categories:</strong>
-                  <a href="#" title="categories">Clothing,</a>
-                  <a href="#" title="categories">Men's Clothes,</a>
-                  <a href="#" title="categories">Tops & T-Shirts</a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <!-- / quick view -->
-
-  <div class="modal fade" id="modallong" tabindex="-1" aria-modal="true" role="dialog">
-    <div class="modal-dialog modal-fullscreen-md-down modal-md modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h2 class="modal-title fs-5">Cart</h2>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <div class="shopping-cart">
-            <div class="shopping-cart-content">
-              <div class="mini-cart cart-list p-0 mt-3">
-                <div class="mini-cart-item d-flex border-bottom pb-3">
-                  <div class="col-lg-2 col-md-3 col-sm-2 me-4">
-                    <a href="#" title="product-image">
-                      <img src="images/single-product-thumb1.jpg" class="img-fluid" alt="single-product-item">
-                    </a>
-                  </div>
-                  <div class="col-lg-9 col-md-8 col-sm-8">
-                    <div class="product-header d-flex justify-content-between align-items-center mb-3">
-                      <h4 class="product-title fs-6 me-5">Sport Shoes For Men</h4>
-                      <a href="" class="remove" aria-label="Remove this item" data-product_id="11913"
-                        data-cart_item_key="abc" data-product_sku="">
-                        <svg class="close">
-                          <use xlink:href="#close"></use>
-                        </svg>
-                      </a>
-                    </div>
-                    <div class="quantity-price d-flex justify-content-between align-items-center">
-                      <div class="input-group product-qty">
-                        <button type="button"
-                          class="quantity-left-minus btn btn-light rounded-0 rounded-start btn-number"
-                          data-type="minus">
-                          <svg width="16" height="16">
-                            <use xlink:href="#minus"></use>
-                          </svg>
-                        </button>
-                        <input type="text" name="quantity" class="form-control input-number quantity" value="1">
-                        <button type="button" class="quantity-right-plus btn btn-light rounded-0 rounded-end btn-number"
-                          data-type="plus">
-                          <svg width="16" height="16">
-                            <use xlink:href="#plus"></use>
-                          </svg>
-                        </button>
-                      </div>
-                      <div class="price-code">
-                        <span class="product-price fs-6">$99</span>
-                      </div>
-                    </div>
-                    <!-- quantity-price -->
-                  </div>
-                </div>
-              </div>
-              <div class="mini-cart cart-list p-0 mt-3">
-                <div class="mini-cart-item d-flex border-bottom pb-3">
-                  <div class="col-lg-2 col-md-3 col-sm-2 me-4">
-                    <a href="#" title="product-image">
-                      <img src="images/single-product-thumb2.jpg" class="img-fluid" alt="single-product-item">
-                    </a>
-                  </div>
-                  <div class="col-lg-9 col-md-8 col-sm-8">
-                    <div class="product-header d-flex justify-content-between align-items-center mb-3">
-                      <h4 class="product-title fs-6 me-5">Brand Shoes For Men</h4>
-                      <a href="" class="remove" aria-label="Remove this item" data-product_id="11913"
-                        data-cart_item_key="abc" data-product_sku="">
-                        <svg class="close">
-                          <use xlink:href="#close"></use>
-                        </svg>
-                      </a>
-                    </div>
-                    <div class="quantity-price d-flex justify-content-between align-items-center">
-                      <div class="input-group product-qty">
-                        <button type="button"
-                          class="quantity-left-minus btn btn-light rounded-0 rounded-start btn-number"
-                          data-type="minus">
-                          <svg width="16" height="16">
-                            <use xlink:href="#minus"></use>
-                          </svg>
-                        </button>
-                        <input type="text" name="quantity" class="form-control input-number quantity" value="1">
-                        <button type="button" class="quantity-right-plus btn btn-light rounded-0 rounded-end btn-number"
-                          data-type="plus">
-                          <svg width="16" height="16">
-                            <use xlink:href="#plus"></use>
-                          </svg>
-                        </button>
-                      </div>
-                      <div class="price-code">
-                        <span class="product-price fs-6">$99</span>
-                      </div>
-                    </div>
-                    <!-- quantity-price -->
-                  </div>
-                </div>
-              </div>
-              <!-- cart-list -->
-              <div class="mini-cart-total d-flex justify-content-between py-4">
-                <span class="fs-6">Subtotal:</span>
-                <span class="special-price-code">
-                  <span class="price-amount amount fs-6" style="opacity: 1;">
-                    <bdi>
-                      <span class="price-currency-symbol">$</span>198.00 </bdi>
-                  </span>
-                </span>
-              </div>
-              <div class="modal-footer my-4 justify-content-center">
-                <button type="button" class="btn btn-red hvr-sweep-to-right dark-sweep">View Cart</button>
-                <button type="button"
-                  class="btn btn-outline-gray hvr-sweep-to-right dark-sweep">Checkout</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <!-- cart view -->
 <header id="header" class="site-header text-black">
     <nav id="header-nav" class="navbar navbar-expand-lg">
       <div class="container-lg">
         <a class="navbar-brand" href="/">
-          <img src="images/main-logo.png" class="logo" alt="logo">
+          <img src="{% static 'images/logo.png' %}" class="logo" alt="logo" style="width: 78px; padding-left: 5px;">
         </a>
         <button class="navbar-toggler d-flex d-lg-none order-3 border-0 p-1 ms-2" type="button" data-bs-toggle="offcanvas"
           data-bs-target="#bdNavbar" aria-controls="bdNavbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -239,53 +42,33 @@
           </div>
           <div class="offcanvas-body">
             <ul id="navbar" class="navbar-nav fw-bold justify-content-end align-items-center flex-grow-1">
-              <li class="nav-item dropdown">
-                <a class="nav-link me-5 active dropdown-toggle border-0" href="/" data-bs-toggle="dropdown"
-                  aria-expanded="false">Home</a>
+              <li class="nav-item">
+                <a class="nav-link me-5" href="/">Home</a>
               </li>
               <li class="nav-item">
                 <a class="nav-link me-5" href="/products">Products</a>
               </li>
-              <li class="nav-item dropdown">
-                <a class="nav-link me-5 active dropdown-toggle border-0" href="#" data-bs-toggle="dropdown"
-                  aria-expanded="false">Page</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link me-5" href="index.html">Login</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link me-5" href="#">Register</a>
-              </li>
+              {% if user.is_authenticated %}
               <li class="nav-item">
                 <a class="nav-link me-5" href="view_cart">View Cart</a>
               </li>
+               <li class="nav-item">
+              <a class="nav-link me-5" href="#">Hi {{ user.first_name }}</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link me-5" href="{% url 'logout' %}">Logout</a>
+            </li>
+              {% else %}
+              <li class="nav-item">
+                <a class="nav-link me-5" href="/login">Login</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link me-5" href="/register">Register</a>
+              </li>
+              {% endif %}
+
             </ul>
           </div>
-        </div>
-        <div class="user-items ps-0 ps-md-5">
-          <ul class="d-flex justify-content-end list-unstyled align-item-center m-0">
-            <li class="pe-3">
-              <a href="login" data-bs-toggle="modal" data-bs-target="#modallogin" class="border-0">
-                <svg class="user" width="24" height="24">
-                  <use xlink:href="#user"></use>
-                </svg>
-              </a>
-            </li>
-            <li class="pe-3">
-              <a href="#" data-bs-toggle="modal" data-bs-target="#modallong" class="border-0">
-                <svg class="shopping-cart" width="24" height="24">
-                  <use xlink:href="#shopping-cart"></use>
-                </svg>
-              </a>
-            </li>
-            <li>
-              <a href="#" class="search-item border-0" data-bs-toggle="collapse" data-bs-target="#search-box" aria-label="Toggle navigation">
-                <svg class="search" width="24" height="24">
-                  <use xlink:href="#search"></use>
-                </svg>
-              </a>
-            </li>
-          </ul>
         </div>
       </div>
     </nav>

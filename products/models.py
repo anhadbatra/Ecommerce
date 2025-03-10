@@ -30,14 +30,11 @@ class Cart(models.Model):
     user = models.OneToOneField('main.User', on_delete=models.CASCADE)
 
 class Favourites(models.Model):
-    products = models.ForeignKey(Product,on_delete=models.CASCADE)
+    products = models.JSONField(default=list)
     user = models.ForeignKey('main.User', on_delete=models.CASCADE)
 
-    class Meta:
-        unique_together = ('user', 'products')
-
     def __str__(self):
-        return f"{self.user.username} - {self.products.name}"
+        return f"{self.user} - {self.products}"
 
 
 
