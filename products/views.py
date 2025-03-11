@@ -39,9 +39,7 @@ class Add_to_Cart(View):
         products = []
         data = json.loads(request.body)
         product_id = data.get('product_id')
-        print(product_id)
         get_user = request.user
-        print(get_user)
         cart_item, created = CartItem.objects.get_or_create(
                 user=get_user,
                 defaults={'products':{product_id:1}}  # Store product_id in a list/tuple
