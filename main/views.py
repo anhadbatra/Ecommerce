@@ -4,6 +4,7 @@ from django.http import JsonResponse
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth import authenticate,login,logout
 from .models import User
+from products.models import Product
 
 class User_Register(View):
     def post(self,request):
@@ -38,9 +39,10 @@ class User_Login(View):
         
 class Home(View):
     def get(self,request):
-        user = request.user
-        user = {'user':user}
-        return render(request,'index.html',{'user': request.user})
+        products = Product.objects.all()
+        product = {'product':products}
+        context = {'user': request.user, 'product': product}
+        return render(request, 'index.html', context)
 
 
 class LogoutView(View):
