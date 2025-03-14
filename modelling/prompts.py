@@ -1,12 +1,12 @@
 from products.models import Product
 from django.views import View
-from django.shortcuts import render
+from django.template.loader import render_to_string
 from langchain_ollama.llms import OllamaLLM
-from django.core import serializers
 from langchain_core.runnables import RunnableSequence
 from langchain.prompts import PromptTemplate
 import numpy as np
 import re,json
+from django.http import HttpResponse
 
 
 def prompt_model(data,prompt):
@@ -51,7 +51,8 @@ class Result(View):
         matching_products = Product.objects.filter(pk__in=result)
         print(matching_products)
         products = {'product':matching_products}
-        return render(request,'products/products.html',products)
+        html = render_to_string('products/products_partial.html',products)
+        return HttpResponse(html)
 
         
         
