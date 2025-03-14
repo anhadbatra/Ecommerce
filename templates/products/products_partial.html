@@ -1,0 +1,12 @@
+{% if product %}
+    {% for p in product %}
+        <div class="product">
+            <img src="{{ p.image_main.url }}" alt="{{ p.name }}">
+            <h4>{{ p.name }}</h4>
+            <p>Price: ${{ p.price }}</p>
+            <a href="product_detail/{{ p.id }}">View Details</a>
+        </div>
+    {% endfor %}
+{% else %}
+    <p>No products available.</p>
+{% endif %}
