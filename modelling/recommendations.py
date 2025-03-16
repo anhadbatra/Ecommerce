@@ -23,13 +23,16 @@ def recommodation(request):
         user_similarity = cosine_similarity(user_item_matrix)
         user_similarity_df = pd.DataFrame(user_similarity, index=user_item_matrix.index, 
                                         columns=user_item_matrix.index)
-        print(user_similarity)
+        print(user_similarity_df.head())
 
         # Example: Recommend products for a specific user (e.g., user_id=1)
         user_id = request.user.id
         print(user_id)
         if user_id is None:
                 return
+        if user_id not in user_item_matrix.index:
+                return []
+        
         similar_users = user_similarity_df[user_id].sort_values(ascending=False)[1:]  # Exclude self
         similar_users_products = user_item_matrix.loc[similar_users.index].mean(axis=0)
         recommendations = similar_users_products.sort_values(ascending=False).head(5)
@@ -38,7 +41,6 @@ def recommodation(request):
         print(recommendations)
         product_ids = recommendations.index.tolist()
         matching_products = Product.objects.filter(pk__in=product_ids)
-        print(matching_products)
         return matching_products
         
         

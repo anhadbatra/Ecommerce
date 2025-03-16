@@ -16,7 +16,7 @@
     <span class="dot" data-index="4"></span>
   </div>
 </div>
-{% if re_product %}
+{% if r_product %}
 <section id="featured-products" class="product-store">
   <div class="container-md">
     <div class="display-header d-flex align-items-center justify-content-between">
@@ -28,7 +28,7 @@
     <div class="product-content padding-small">
       <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5">
       
-        {% for p in re_product %}
+        {% for p in r_product %}
         <div class="col mb-4">
           <div class="product-card position-relative">
             <div class="card-img">
@@ -58,7 +58,6 @@
         </div>
         {% endfor %}
         {% else %}
-        <p>No Products Found</p>
       {% endif %}
       </div>
     </div>

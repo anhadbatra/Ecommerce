@@ -4,7 +4,7 @@ from django.http import JsonResponse
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth import authenticate,login,logout
 from .models import User
-from products.models import Product
+from products.models import Product,CartItem,Favourites
 from modelling.recommendations import recommodation
 
 class User_Register(View):
@@ -41,7 +41,6 @@ class Home(View):
     def get(self,request):
         products = Product.objects.order_by('-id')
         recommodation_products = recommodation(request)
-        print(recommodation_products)
         if recommodation_products is None:
                 recommodation_products = ""
         print(recommodation_products)
