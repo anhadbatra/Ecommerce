@@ -1,18 +1,37 @@
 from django.db import models
 from .storage_backends import MediaStorage
 
+Color_choices =(
+    ('black','BLACK'),
+    ('white','WHITE'),
+    ('blue','BLUE'),
+    ('red','RED'),
+    ('orange','ORANGE'),
+)
+Categories = (
+    ('loafers','Loafers'),
+    ('sports shoes','Sport Shoes'),
+    ('Sneakers','Sneakers'),
+    ('Platform Shoe','Platform Shoe')
+)
+Brand = (
+    ('Adidas','Adidas'),
+    ('Nike','Nike'),
+    ('New Balance','New Balance'),
+    ('Skechers','Skechers'),
+
+)
+
 
 class Product(models.Model):
     name = models.CharField(max_length=100)
-    brand = models.CharField(max_length=20)
-    product_type = models.CharField(max_length=100)
+    brand = models.CharField(max_length=20,choices=Brand,default='Adidas')
     size = models.IntegerField() 
-    color = models.CharField(max_length=20)  
+    color = models.CharField(max_length=10,choices=Color_choices,default='black')  
     price = models.DecimalField(max_digits=10, decimal_places=2)
     description = models.TextField()
     stock = models.PositiveIntegerField()
-    category = models.CharField(max_length=50)
-    material = models.CharField(max_length=100)
+    category = models.CharField(max_length=15,choices=Categories,default='Loafers')
     image_main = models.FileField(storage=MediaStorage())
 
     def __str__(self):
