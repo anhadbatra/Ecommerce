@@ -4,7 +4,8 @@ from django.http import JsonResponse
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth import authenticate,login,logout
 from .models import User
-from products.models import Product
+from products.models import Product,CartItem,Favourites
+from modelling.recommendations import recommodation
 
 class User_Register(View):
     def post(self,request):
@@ -16,9 +17,8 @@ class User_Register(View):
             return redirect('/login')
         if User.objects.filter(email=email_id).exists():
             return JsonResponse({'error':'Email ID already exists'},status=404)
-        usr = User.objects.create(email=email_id,password=password,first_name=first_name,last_name=last_name)
-        usr.save()
-        return JsonResponse({'success':'User created successfully'})
+        usr = User.objects.create_user(email=email_id,password=password,first_name=first_name,last_name=last_name)
+        return render(request,'login_register/login.html')
     def get(self,request):
         return render(request,'login_register/register.html')
 
@@ -39,9 +39,12 @@ class User_Login(View):
         
 class Home(View):
     def get(self,request):
-        products = Product.objects.all()
-        product = {'product':products}
-        context = {'user': request.user, 'product': product}
+        products = Product.objects.order_by('-id')
+        recommodation_products = recommodation(request)
+        if recommodation_products is None:
+                recommodation_products = ""
+        print(recommodation_products)
+        context = {'user': request.user, 'product': products,'r_product':recommodation_products}
         return render(request, 'index.html', context)
 
 

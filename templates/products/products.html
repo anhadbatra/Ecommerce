@@ -183,29 +183,25 @@
     </div>
 
     <!-- Product Listing -->
-    <div class="product-list">
-      {% if product %}
-        {% for p in product %}
-          <div class="product">
-            <img src="{{ p.image_main.url }}" alt="{{ p.name }}">
-            <h4>{{ p.name }}</h4>
-            <p>Price: ${{ p.price }}</p>
-            <a href="product_detail/{{ p.id }}">View Details</a>
-            </div>
-        {% endfor %}
-      {% else %}
-        <p>No products available.</p>
-      {% endif %}
+    <div class="product-list" id="productList">
+      {% include 'products/products_partial.html' %}
     </div>
   </div>
+  </div>
 <script>
+document.addEventListener('DOMContentLoaded',function(){
 document.getElementById('searchForm').addEventListener('submit', function(event) {
             event.preventDefault(); // Prevent default form submission
 
             const form = event.target;
             const searchInput = form.querySelector('input[name="prompt"]').value;
-            const resultDiv = document.getElementById('searchResult');
             const url = "/search_query"; // Replace with your view's URL name
+            const productListDiv = document.getElementById('productList');
+            console.log('productListDiv:', productListDiv);
+            if (!productListDiv) {
+            console.error('Element with id "productList" not found.');
+            return;
+            }
             const csrftoken = form.querySelector('[name=csrfmiddlewaretoken]').value;
             const formData = new FormData();
             formData.append('prompt', searchInput);
@@ -217,7 +213,16 @@ document.getElementById('searchForm').addEventListener('submit', function(event)
                     'X-CSRFToken': csrftoken // Django requires this for POST requests
                 }
             })
+            .then(response => response.text())
+            .then(data => {
+              productListDiv.innerHTML = data;
+            })
+            .catch(error => {
+      console.error('Error:', error);
+      productListDiv.innerHTML = "<p>An error occurred while processing your request.</p>";
+    });
           });
+        });
 
 
               
