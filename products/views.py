@@ -49,18 +49,39 @@ class Add_to_Cart(View):
                 current_products[product_id] = current_products.get(product_id, 0) + 1
                 cart_item.products = current_products
                 cart_item.save()
+        print(json.dumps(cart_item.products))
+        product_detail = Product.objects.get(pk=product_id)
+        product_detail_get = {'product_detail': product_detail}
+        return render(request,'products/product_details.html',product_detail_get)
 
 class Cart_View(View):
-    def get(self,request):
+    def get(self, request):
         get_user = request.user
-        products_dict = CartItem.objects.filter(user=get_user)
-        product_keys = []
-        quantity = []
-
-        for product in products_dict:
-            product_keys.extend(product.products.keys())
-            quantity.extend(product.products.values())
-        print(product_keys,quantity)
+        cart_items = CartItem.objects.filter(user=get_user)
+        cart_data = {}
+        total_price = 0  # initialize total cart price
+        for cart_item in cart_items:
+            product_data = cart_item.products 
+            for product_id, quantity in product_data.items():
+                cart_data[int(product_id)] = cart_data.get(int(product_id), 0) + quantity 
+        if not cart_data:
+            return render(request, 'products/view_cart.html', {'cart_items': {}, 'error': 'Your cart is empty.'})
+        # get product details from DB
+        product_objects = Product.objects.filter(id__in=cart_data.keys())
+        print(product_objects)
+        for product in product_objects:
+            item_total_price = product.price * cart_data[product.id] #count of product items into product price  
+            total_price += item_total_price  
+            cart_with_details = {}
+            cart_with_details[product.id] = {
+                'id': product.id,
+                'image': f"{settings.MEDIA_URL}{product.image_main}", 
+                'name': product.name,
+                'quantity': cart_data[product.id],
+                'price': product.price, 
+                'total_price': item_total_price
+            }
+        return render(request, 'products/view_cart.html', {'cart_items': cart_with_details,'total_price': total_price})
         
 class Upload_images_to_s3():
     @staticmethod

@@ -8,6 +8,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Your Cart</title>
     <style>
+         .product img {
+      max-width: 30%;
+      max-height: 30%;
+      height: auto;
+      border-radius: 4px;
+    }
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
@@ -30,6 +36,11 @@
             text-align: center;
             color: #666;
         }
+        .total {
+            font-weight: bold;
+            text-align: right;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
@@ -39,14 +50,17 @@
         {% if error %}
             <p class="error">{{ error }}</p>
         {% endif %}
-
         {% if cart_items %}
-            {% for product_id, quantity in cart_items.items %}
-                <div class="cart-item">
-                    <span>Product ID: {{ product_id }}</span>
-                    <span>Quantity: {{ quantity }}</span>
+            {% for product_id, details in cart_items.items %}
+            <div class="cart-item product">
+                <img class="product-image" src="{{ details.image }}" alt="{{ details.name }}">
+                <span>{{ details.name }}</span>
+                <span>Quantity: {{ details.quantity }}</span>
+                <span>Price: ${{ details.price }}</span>
+                <span>Total: ${{ details.total_price }}</span>
                 </div>
             {% endfor %}
+            <p class="total">Total: ${{ total_price}}</p>
         {% else %}
             <p class="empty">Your cart is empty.</p>
         {% endif %}
