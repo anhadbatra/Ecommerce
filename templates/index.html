@@ -2,18 +2,15 @@
 {% include 'header.html' %}
 <div class="banner-container">
   <div class="banner-slide">
-    <img src="https://via.placeholder.com/1000x400?text=Image+1" alt="Image 1">
-    <img src="https://via.placeholder.com/1000x400?text=Image+2" alt="Image 2">
-    <img src="https://via.placeholder.com/1000x400?text=Image+3" alt="Image 3">
-    <img src="https://via.placeholder.com/1000x400?text=Image+4" alt="Image 4">
-    <img src="https://via.placeholder.com/1000x400?text=Image+5" alt="Image 5">
+    <img src="{% static 'images/banner_1.jpg' %}" alt="Image 1">
+    <img src="{% static 'images/banner_2.jpg' %}" alt="Image 2">
+    <img src="{% static 'images/banner_3.jpg' %}" alt="Image 3">
   </div>
   <div class="paginator">
     <span class="dot active" data-index="0"></span>
     <span class="dot" data-index="1"></span>
     <span class="dot" data-index="2"></span>
     <span class="dot" data-index="3"></span>
-    <span class="dot" data-index="4"></span>
   </div>
 </div>
 {% if r_product %}
@@ -21,36 +18,22 @@
   <div class="container-md">
     <div class="display-header d-flex align-items-center justify-content-between">
       <h2 class="section-title text-uppercase">Featured Products</h2>
-      <div class="btn-right">
-        <a href="/products" class="d-inline-block text-uppercase text-hover fw-bold">View all</a>
-      </div>
     </div>
     <div class="product-content padding-small">
       <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5">
-      
-        {% for p in r_product %}
+      {% for p in r_product %}
         <div class="col mb-4">
           <div class="product-card position-relative">
             <div class="card-img">
               <img src="{{ p.image_main.url }}" alt="{{ p.name }}" class="product-image img-fluid">
               <div class="cart-concern position-absolute d-flex justify-content-center">
                 <div class="cart-button d-flex gap-2 justify-content-center align-items-center">
-                  <button type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#modallong">
-                    <svg class="shopping-carriage">
-                      <use xlink:href="#shopping-carriage"></use>
-                    </svg>
-                  </button>
-                  <button type="button" class="btn btn-light" data-bs-target="#modaltoggle" data-bs-toggle="modal">
-                    <svg class="quick-view">
-                      <use xlink:href="#quick-view"></use>
-                    </svg>
-                  </button>
                 </div>
               </div>
             </div>
             <div class="card-detail d-flex justify-content-between align-items-center mt-3">
               <h3 class="card-title fs-6 fw-normal m-0">
-                <a href="/">{{ p.name }}</a>
+                <a href="product_detail/{{ p.id }}">{{ p.name }}</a>
               </h3>
               <span class="card-price fw-bold">${{ p.price }}</span>
             </div>
@@ -86,7 +69,7 @@
                 </div>
                 <div class="card-detail d-flex justify-content-between align-items-center mt-3">
                   <h3 class="card-title fs-6 fw-normal m-0">
-                    <a href="">{{p.name}}</a>
+                    <a href="product_detail/{{ p.id }}">{{p.name}}</a>
                   </h3>
                   <span class="card-price fw-bold">${{ p.price }}</span>
                 </div>
