@@ -125,49 +125,61 @@ class Favourites_product(View):
 
         
 class CheckoutSession(View):
-    def post(*args,**kwargs):
-        cart = Cart.objects.get(id=id)
-        checkout_session = stripe.checkout.Session.create(
-        payment_method_types=["card"],
-            line_items=[
-                {
+    def post(self, request):
+        user = request.user
+        try:
+            cart_item = CartItem.objects.get(user=user)
+            line_items = []
+
+            for product_id, quantity in cart_item.products.items():
+                product = Product.objects.get(id=product_id)
+                line_items.append({
                     "price_data": {
                         "currency": "usd",
-                        "unit_amount": int(cart.price) * 100,
+                        "unit_amount": int(product.price * 100),  # Price in cents
                         "product_data": {
-                            "name": cart.pro
+                            "name": product.name,
                         },
                     },
-                    "quantity": 1,
-                }
-            ],
-            mode="payment",
-            success_url=settings.PAYMENT_SUCCESS_URL,
-            cancel_url=settings.PAYMENT_CANCEL_URL,
-        )
+                    "quantity": quantity,
+                })
 
-    def payment_sucess(request):
-        if 'success' in request.GET:
-            last_order = Orders.objects.latest('timestamp')
-            order_number = last_order.order_number
-            order_number = order_number_generation(order_number)
-            create_order = Orders.objects.create(
-                order_number= order_number,
-
+            checkout_session = stripe.checkout.Session.create(
+                payment_method_types=["card"],
+                line_items=line_items,
+                mode="payment",
+                success_url=settings.PAYMENT_SUCCESS_URL + "?session_id={CHECKOUT_SESSION_ID}",
+                cancel_url=settings.PAYMENT_CANCEL_URL,
+                customer_email=user.email,
             )
 
-    
+            return JsonResponse({'id': checkout_session.id})
+        
+        except CartItem.DoesNotExist:
+            return JsonResponse({'error': 'No cart found for this user'}, status=404)
+class PaymentSuccess(View):
+    def get(self, request):
+        session_id = request.GET.get("session_id")
+        if session_id:
+            # You can fetch session if needed: session = stripe.checkout.Session.retrieve(session_id)
+            last_order = Orders.objects.latest('timestamp') if Orders.objects.exists() else None
+            order_number = order_number_generation(last_order.order_number if last_order else None)
+
+            Orders.objects.create(
+                order_number=order_number,
+                user=request.user
+            )
+
+        return render(request, 'payment_success.html')  # Make sure this template exists
+
+
+class PaymentCancel(View):
+    def get(self, request):
+        return render(request, 'payment_cancel.html')  # Create a simple cancel page
+ 
 
 def order_number_generation(order_number):
-    if order_number is not None:
-        order_number += 1
-        return order_number
-    else:
-        order_number = 1000
-        return order_number
-
-        
-
+    return order_number + 1 if order_number else 1000
 
             
 def connect_S3():
@@ -184,3 +196,5 @@ def connect_S3():
 
 
 # Create your views here.
+
+
