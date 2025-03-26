@@ -43,11 +43,47 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    
+    'django.contrib.sites',  # Required for django-allauth
+    'allauth',  # Core allauth app
+    'allauth.account',  # Email/username authentication
+    'allauth.socialaccount',  # Social authentication
+    'allauth.socialaccount.providers.google',  # Google Login Provider
+    
     'main',
     'products',
     'storages',
 ]
 
+SITE_ID = int(os.environ.get("SITE_ID", 1))  # Default to 1 if not set
+LOGIN_REDIRECT_URL = os.environ.get("LOGIN_REDIRECT_URL", "/")
+ACCOUNT_LOGOUT_REDIRECT_URL = os.environ.get("ACCOUNT_LOGOUT_REDIRECT_URL", "/")
+
+# Enable email authentication
+ACCOUNT_AUTHENTICATION_METHOD = os.environ.get("ACCOUNT_AUTHENTICATION_METHOD", "email")
+ACCOUNT_EMAIL_REQUIRED = os.environ.get("ACCOUNT_EMAIL_REQUIRED", "True") == "True"
+ACCOUNT_USERNAME_REQUIRED = os.environ.get("ACCOUNT_USERNAME_REQUIRED", "False") == "True"
+
+# Social account settings
+SOCIALACCOUNT_AUTO_SIGNUP = os.environ.get("SOCIALACCOUNT_AUTO_SIGNUP", "True") == "True"
+ACCOUNT_SIGNUP_REDIRECT_URL = os.environ.get("ACCOUNT_SIGNUP_REDIRECT_URL", "/")
+ACCOUNT_USER_MODEL_USERNAME_FIELD =None
+
+# Google OAuth Configuration
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+       'APP': {
+            'client_id': os.environ.get("GOOGLE_CLIENT_ID"),
+            'secret': os.environ.get("GOOGLE_CLIENT_SECRET"),
+            'key': os.environ.get("GOOGLE_CLIENT_KEY", "")
+        }
+    }
+}
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',  # Default Django authentication
+    'allauth.account.auth_backends.AuthenticationBackend',  # Django-allauth authentication
+]
 
 
 MIDDLEWARE = [
@@ -58,6 +94,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
 ]
 
 ROOT_URLCONF = 'ecommerce.urls'
