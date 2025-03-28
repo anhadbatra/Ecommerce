@@ -9,8 +9,8 @@ import json
 from django.http import JsonResponse
 import stripe
 
-stripe.api_key = "sk_test_51QwDJ2BHn3y4UQlTWT0wZ25ObGSBYkBft8GsfEO3eJnUD9xJRzxruAuf6sGJVrV82LUq5VT88nPLnp2sTQKvicfg00WDP5d7v3"#settings.STRIPE_SECRET_KEY
-print("Raw key:-"   , repr(stripe.api_key))   # Shows hidden characters if any
+
+stripe.api_key =os.environ.get('STRIPE_SECRET_KEY') 
 print("Starts with sk_test_:", stripe.api_key.startswith("sk_test_"))
 class Products(View):
     def post(request):
