@@ -1,7 +1,7 @@
 from django.urls import path
 from . import views
 from modelling.prompts import Result
-from .views import CheckoutSession, PaymentSuccess, PaymentCancel
+from .views import CheckoutSession, OrderDetailsView, PaymentSuccess, PaymentCancel
 
 urlpatterns = [
     path('products',views.Products.as_view()),
@@ -16,4 +16,7 @@ urlpatterns = [
     path('create-checkout-session/', CheckoutSession.as_view(), name='create-checkout-session'),
     path('payment-success/', PaymentSuccess.as_view(), name='payment-success'),
     path('payment-cancel/', PaymentCancel.as_view(), name='payment-cancel'),
+
+    path('order/<int:order_number>/', OrderDetailsView.as_view(), name='order-details'),
+
 ]

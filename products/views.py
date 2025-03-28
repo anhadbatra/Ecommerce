@@ -1,6 +1,6 @@
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.views import View
-from .models import Product , Favourites , Cart , Orders , CartItem
+from .models import  Product , Favourites , Cart , Orders , CartItem
 from django.http import JsonResponse
 import boto3
 import os
@@ -9,8 +9,9 @@ import json
 from django.http import JsonResponse
 import stripe
 
-stripe.api_key = settings.STRIPE_SECRET_KEY
-
+stripe.api_key = "sk_test_51QwDJ2BHn3y4UQlTWT0wZ25ObGSBYkBft8GsfEO3eJnUD9xJRzxruAuf6sGJVrV82LUq5VT88nPLnp2sTQKvicfg00WDP5d7v3"#settings.STRIPE_SECRET_KEY
+print("Raw key:-"   , repr(stripe.api_key))   # Shows hidden characters if any
+print("Starts with sk_test_:", stripe.api_key.startswith("sk_test_"))
 class Products(View):
     def post(request):
         price_range = request.POST.get('range')
@@ -81,7 +82,12 @@ class Cart_View(View):
                 'price': product.price, 
                 'total_price': item_total_price
             }
-        return render(request, 'products/view_cart.html', {'cart_items': cart_with_details,'total_price': total_price})
+        return render(request, 'products/view_cart.html', 
+            {
+            'cart_items': cart_with_details,
+            'total_price': total_price,
+            'STRIPE_PUBLISHABLE_KEY':os.environ.get('STRIPE_PUBLISHABLE_KEY')
+            })
         
 class Upload_images_to_s3():
     @staticmethod
@@ -148,40 +154,87 @@ class CheckoutSession(View):
                 payment_method_types=["card"],
                 line_items=line_items,
                 mode="payment",
-                success_url=settings.PAYMENT_SUCCESS_URL + "?session_id={CHECKOUT_SESSION_ID}",
-                cancel_url=settings.PAYMENT_CANCEL_URL,
+                success_url="http://127.0.0.1:8000/payment-success/" + "?session_id={CHECKOUT_SESSION_ID}",
+                cancel_url="http://127.0.0.1:8000/payment-cancle/",
                 customer_email=user.email,
             )
-
+            print(checkout_session)
             return JsonResponse({'id': checkout_session.id})
-        
+
         except CartItem.DoesNotExist:
             return JsonResponse({'error': 'No cart found for this user'}, status=404)
 class PaymentSuccess(View):
     def get(self, request):
-        session_id = request.GET.get("session_id")
-        if session_id:
-            # You can fetch session if needed: session = stripe.checkout.Session.retrieve(session_id)
-            last_order = Orders.objects.latest('timestamp') if Orders.objects.exists() else None
+        user = request.user
+        session_id = request.GET.get('session_id')
+
+        if not session_id:
+            return render(request, 'payment_success.html', {'message': 'No session ID found.'})
+
+        try:
+            session = stripe.checkout.Session.retrieve(session_id)
+            payment_intent = stripe.PaymentIntent.retrieve(session.payment_intent)
+
+            cart_item = CartItem.objects.get(user=user)
+
+            # Generate new order number
+            last_order = Orders.objects.order_by('-timestamp').first()
             order_number = order_number_generation(last_order.order_number if last_order else None)
 
+            order_items = []
+            total_amount = 0
+
+            for product_id, quantity in cart_item.products.items():
+                product = Product.objects.get(id=product_id)
+                total_price = float(product.price) * quantity
+                total_amount += total_price
+
+                order_items.append({
+                    'product_id': product.id,
+                    'product_name': product.name,
+                    'price': float(product.price),
+                    'quantity': quantity,
+                    'total_price': total_price
+                })
+
+            # Save order
             Orders.objects.create(
                 order_number=order_number,
-                user=request.user
+                products=order_items,
+                total_amount=total_amount,
+                stripe_payment_intent=session.payment_intent,
+                stripe_customer_id=session.customer,
+                stripe_session_id=session.id,
+                payment_status=session.payment_status,
+                receipt_email=session.customer_email
             )
+            # Clear cart
+            cart_item.delete()
+            context = {
+                'order': order_number,
+                'products': order_items,  # JSON list
+            }
+            return render(request, 'products/order_details.html', context)
 
-        return render(request, 'payment_success.html')  # Make sure this template exists
-
+        except Exception as e:
+            return render(request, 'payment_success.html', {'message': f"Error: {str(e)}"})
 
 class PaymentCancel(View):
     def get(self, request):
-        return render(request, 'payment_cancel.html')  # Create a simple cancel page
- 
+        return render(request, 'payment_cancel.html', {'message': 'Payment was cancelled. You can try again.'})
+
 
 def order_number_generation(order_number):
     return order_number + 1 if order_number else 1000
 
-            
+class OrderDetailsView(View):
+    def get(self, request, order_number):
+        order = get_object_or_404(Orders, order_number=order_number, receipt_email=request.user.email)
+        context = {
+            'order': order,
+            'products': order.products,  # JSON list
+        }
+        return render(request, 'products/order_details.html', context)
 def connect_S3():
     BUCKET_NAME = os.environ.get('AWS_BUCKET_NAME')
     AWS_ACCESS_KEY = os.environ.get('AWS_ACCESS_KEY_ID')
