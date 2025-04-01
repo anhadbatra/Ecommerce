@@ -3,68 +3,128 @@
 {% block content %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
+    <script src="https://js.stripe.com/v3/"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Your Cart</title>
     <style>
-         .product img {
-      max-width: 30%;
-      max-height: 30%;
-      height: auto;
-      border-radius: 4px;
-    }
+        .product img {
+            max-width: 30%;
+            max-height: 30%;
+            height: auto;
+            border-radius: 4px;
+        }
+
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
         }
+
         .cart-container {
             max-width: 600px;
             margin: 0 auto;
         }
+
         .cart-item {
             border-bottom: 1px solid #ddd;
             padding: 10px 0;
             display: flex;
             justify-content: space-between;
+            align-items: center;
         }
+
         .error {
             color: red;
             text-align: center;
         }
+
         .empty {
             text-align: center;
             color: #666;
         }
+
         .total {
             font-weight: bold;
             text-align: right;
             margin-top: 10px;
         }
+
+        #checkout-button {
+            display: block;
+            margin: 20px auto 0 auto;
+            padding: 12px 24px;
+            background-color: #28a745;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        #checkout-button:hover {
+            background-color: #218838;
+        }
     </style>
 </head>
+
 <body>
     <div class="cart-container">
         <h1>Your Cart</h1>
-        
+
         {% if error %}
-            <p class="error">{{ error }}</p>
+        <p class="error">{{ error }}</p>
         {% endif %}
+
         {% if cart_items %}
-            {% for product_id, details in cart_items.items %}
-            <div class="cart-item product">
-                <img class="product-image" src="{{ details.image }}" alt="{{ details.name }}">
-                <span>{{ details.name }}</span>
-                <span>Quantity: {{ details.quantity }}</span>
-                <span>Price: ${{ details.price }}</span>
-                <span>Total: ${{ details.total_price }}</span>
-                </div>
-            {% endfor %}
-            <p class="total">Total: ${{ total_price}}</p>
+        {% for product_id, details in cart_items.items %}
+        <div class="cart-item product">
+            <img class="product-image" src="{{ details.image }}" alt="{{ details.name }}">
+            <span>{{ details.name }}</span>
+            <span>Quantity: {{ details.quantity }}</span>
+            <span>Price: ${{ details.price }}</span>
+            <span>Total: ${{ details.total_price }}</span>
+        </div>
+        {% endfor %}
+        <p class="total">Total: ${{ total_price }}</p>
+        <button id="checkout-button">Checkout</button>
         {% else %}
-            <p class="empty">Your cart is empty.</p>
+        <p class="empty">Your cart is empty.</p>
         {% endif %}
     </div>
+
+    <script>
+        const stripe = Stripe("{{ STRIPE_PUBLISHABLE_KEY }}");
+        const checkoutBtn = document.getElementById("checkout-button");
+
+        if (checkoutBtn) {
+            checkoutBtn.addEventListener("click", function () {
+                fetch("/create-checkout-session/", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": "{{ csrf_token }}"
+                    }
+                })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.id) {
+                            stripe.redirectToCheckout({ sessionId: data.id });
+                        } else {
+                            alert("Checkout session could not be created.");
+                        }
+                    })
+                    .catch(err => {
+                        console.error("Checkout error:", err);
+                        alert("An error occurred while starting checkout.");
+                    });
+            });
+        }
+    </script>
 </body>
+
 </html>
 {% endblock %}
