@@ -61,6 +61,14 @@ class Favourites(models.Model):
 
 class Orders(models.Model):
     order_number = models.IntegerField(unique=True)
-    cart = models.ForeignKey(Cart,on_delete=models.CASCADE)
+    products = models.JSONField(default=list)
     payment_status = models.IntegerField(default=0)
-    payment_date = models.DateTimeField(auto_now=True)
+    payment_date = models.DateTimeField(auto_now=True)  
+    total_amount = models.DecimalField(max_digits=10, decimal_places=2, null=True)
+    stripe_payment_intent = models.CharField(max_length=255, null=True)
+    stripe_customer_id = models.CharField(max_length=255, null=True)
+    stripe_session_id = models.CharField(max_length=255, null=True)
+    payment_status = models.CharField(max_length=50, null=True)
+    receipt_email = models.EmailField(null=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
+
