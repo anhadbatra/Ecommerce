@@ -14,15 +14,14 @@ stripe.api_key =os.environ.get('STRIPE_SECRET_KEY')
 print("Starts with sk_test_:", stripe.api_key.startswith("sk_test_"))
 class Products(View):
     def post(request):
-        price_range = request.POST.get('range')
         color = request.POST.get('color')
         category = request.POST.get('category')
-        if price_range:
-            Product.objects.get()
         if color:
             product = Product.objects.get(color=color)
         if category:
-            product = Product.objects.get()
+            product = Product.objects.get(category=category)
+        product_details = {'product_filter':product}
+        return render(request,'products/product_details.html',product_details)
 
     def get(self,request):
         product = Product.objects.all()
