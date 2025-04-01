@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Stripe Payment</title>
+    <script src="https://js.stripe.com/v3/"></script>
+</head>
+
+<body>
+    <button id="checkout-button">Pay Now</button>
+
+    <script type="text/javascript">
+        const stripe = Stripe("{{ STRIPE_PUBLISHABLE_KEY }}");
+
+        document.getElementById("checkout-button").addEventListener("click", function () {
+            fetch("/create-checkout-session/")
+                .then(response => response.json())
+                .then(session => {
+                    return stripe.redirectToCheckout({ sessionId: session.id });
+                });
+        });
+    </script>
+</body>
+
+</html>
