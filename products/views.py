@@ -8,6 +8,7 @@ from django.conf import settings
 import json
 from django.http import JsonResponse
 import stripe
+from django.contrib import messages
 
 
 stripe.api_key =os.environ.get('STRIPE_SECRET_KEY') 
@@ -33,61 +34,77 @@ class Product_Details(View):
         product_detail = Product.objects.get(pk=id)
         product_detail_get = {'product_detail': product_detail}
         return render(request,'products/product_details.html',product_detail_get)
-
 class Add_to_Cart(View):
     def post(self, request):
-        products = []
         data = json.loads(request.body)
-        product_id = data.get('product_id')
+        product_id = str(data.get('product_id'))
         get_user = request.user
-        cart_item, created = CartItem.objects.get_or_create(
+
+        try:
+            cart_item, created = CartItem.objects.get_or_create(
                 user=get_user,
-                defaults={'products':{product_id:1}}  # Store product_id in a list/tuple
+                defaults={'products': {product_id: 1}}
             )
-        if not created:
-                current_products = cart_item.products
+
+            if not created:
+                current_products = cart_item.products or {}
                 current_products[product_id] = current_products.get(product_id, 0) + 1
                 cart_item.products = current_products
                 cart_item.save()
-        print(json.dumps(cart_item.products))
-        product_detail = Product.objects.get(pk=product_id)
-        product_detail_get = {'product_detail': product_detail}
-        return render(request,'products/product_details.html',product_detail_get)
+
+            product = Product.objects.get(pk=product_id)
+
+            return JsonResponse({
+                'status': 'success',
+                'message': f"{product.name} added to cart",
+                'cart_count': sum(cart_item.products.values())  # optional
+            })
+        except Exception as e:
+            return JsonResponse({
+                'status': 'error',
+                'message': str(e)
+            }, status=500)
+    
+
+
 
 class Cart_View(View):
     def get(self, request):
         get_user = request.user
         cart_items = CartItem.objects.filter(user=get_user)
+
         cart_data = {}
-        total_price = 0  # initialize total cart price
+        total_price = 0
+
         for cart_item in cart_items:
-            product_data = cart_item.products 
+            product_data = cart_item.products
             for product_id, quantity in product_data.items():
-                cart_data[int(product_id)] = cart_data.get(int(product_id), 0) + quantity 
+                cart_data[int(product_id)] = cart_data.get(int(product_id), 0) + quantity
+
         if not cart_data:
             return render(request, 'products/view_cart.html', {'cart_items': {}, 'error': 'Your cart is empty.'})
-        # get product details from DB
+
         product_objects = Product.objects.filter(id__in=cart_data.keys())
-        print(product_objects)
+        cart_with_details = {}
+
         for product in product_objects:
-            item_total_price = product.price * cart_data[product.id] #count of product items into product price  
-            total_price += item_total_price  
-            cart_with_details = {}
+            item_total_price = product.price * cart_data[product.id]
+            total_price += item_total_price
             cart_with_details[product.id] = {
                 'id': product.id,
-                'image': f"{settings.MEDIA_URL}{product.image_main}", 
+                'image': f"{settings.MEDIA_URL}{product.image_main}",
                 'name': product.name,
                 'quantity': cart_data[product.id],
-                'price': product.price, 
+                'price': product.price,
                 'total_price': item_total_price
             }
-        return render(request, 'products/view_cart.html', 
-            {
+
+        return render(request, 'products/view_cart.html', {
             'cart_items': cart_with_details,
             'total_price': total_price,
-            'STRIPE_PUBLISHABLE_KEY':os.environ.get('STRIPE_PUBLISHABLE_KEY')
-            })
-        
+            'STRIPE_PUBLISHABLE_KEY': os.environ.get('STRIPE_PUBLISHABLE_KEY')
+        })
+      
 class Upload_images_to_s3():
     @staticmethod
     def post(name,image):
@@ -116,14 +133,17 @@ class Favourites_product(View):
             favourite.products.remove(product_id)
             favourite.save()
             return JsonResponse({
-                'status':'removed'
+                'status':'removed',
+                'message': "Product removed from Favourite"
             })
         else:
             favourite.products.append(product_id) # else it will append into new
             favourite.save()
             return JsonResponse({
-                'status':'added'
+                'status':'added',
+                'message': "Product added to Favourite"
             })
+        
 
             
         
@@ -213,6 +233,7 @@ class PaymentSuccess(View):
                 'order': order_number,
                 'products': order_items,  # JSON list
             }
+            messages.success(request, "Order Placed Successfully!")
             return render(request, 'products/order_details.html', context)
 
         except Exception as e:
@@ -226,7 +247,7 @@ class PaymentCancel(View):
 def order_number_generation(order_number):
     return order_number + 1 if order_number else 1000
 
-class OrderDetailsView(View):
+class Order_details_view(View):
     def get(self, request, order_number):
         order = get_object_or_404(Orders, order_number=order_number, receipt_email=request.user.email)
         context = {
@@ -246,7 +267,30 @@ def connect_S3():
     return s3 , BUCKET_NAME
 
 
+class remove_from_cart_view(View):
+    def post(self, request):
+        user = request.user
+        data = json.loads(request.body)
+        product_id = str(data.get('product_id'))  # keys are stored as str in JSONField
 
+        try:
+            cart_item = CartItem.objects.get(user=user)
+            if product_id in cart_item.products:
+                del cart_item.products[product_id]
+                cart_item.save()
+                msg ="Product removed successfully"
+                messages.success(request,msg)
+                return JsonResponse({'status': 'removed',"messages":msg})
+            else:
+                return JsonResponse({'status': 'not found'}, status=404)
+        except CartItem.DoesNotExist:
+            return JsonResponse({'status': 'cart not found'}, status=404)
+class MyOrdersView(View):
+    def get(self, request):
+        user = request.user
+        orders = Orders.objects.filter(receipt_email=user.email).order_by('-timestamp')
+
+        return render(request, 'products/my_orders.html', {'orders': orders})
 # Create your views here.
 
 

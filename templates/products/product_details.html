@@ -89,20 +89,27 @@
           return document.querySelector('input[name="csrfmiddlewaretoken"]').value;
     }
         document.addEventListener('DOMContentLoaded', function() {
-        const addToCartButtons = document.querySelectorAll('.add-to-cart');
-        
+            const addToCartButtons = document.querySelectorAll('.add-to-cart');
         addToCartButtons.forEach(button => {
             button.addEventListener('click', function(event) {
                 const productId = this.getAttribute('data-product-id');
                 const url = `/add_to_cart`;
                 fetch(url, {
-                method: 'POST',
-                body: JSON.stringify({product_id : productId}),
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': '{{ csrf_token }}' 
-                }
-            })
+                    method: 'POST',
+                    body: JSON.stringify({ product_id: productId }),
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    }
+                }).then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            showToast(data.message, 'success');
+                            // Optionally update cart count badge here
+                        } else {
+                            showToast(data.message || "Something went wrong", 'danger');
+                        }
+                    })
           });
         });
     });
@@ -122,6 +129,8 @@
             .then(data => {
                 const icon = button.querySelector('i');
                 if (data.status === 'added') {
+                    showToast(data.message, 'success');
+                    
                     button.classList.add('active');
                     icon.classList.remove('far');
                     icon.classList.add('fas')
@@ -129,6 +138,7 @@
                     button.classList.remove('active');
                     icon.classList.remove('fas')
                     icon.classList.add('far')
+                    showToast(data.message || "Something went wrong", 'danger');
                 }
             })
             .catch(error => console.error('Favourite error:', error));
