@@ -2,6 +2,8 @@ from django.urls import path
 from . import views
 from modelling.prompts import Result
 from .views import CheckoutSession, MyOrdersView, Order_details_view, PaymentSuccess, PaymentCancel, remove_from_cart_view
+from visualization.views import ProductVisualisation
+from .views import CheckoutSession, OrderDetailsView, PaymentSuccess, PaymentCancel
 
 urlpatterns = [
     path('products',views.Products.as_view()),
@@ -17,6 +19,6 @@ urlpatterns = [
     path('payment-cancel/', PaymentCancel.as_view(), name='payment-cancel'),
     path('order/<int:order_number>/', Order_details_view.as_view(), name='order-details'),
     path('my-orders/', MyOrdersView.as_view(), name='my-orders'),
-
-
+    path('add_to_favourites',views.Favourites_product.as_view()),
+    path('order_data',ProductVisualisation.as_view())
 ]

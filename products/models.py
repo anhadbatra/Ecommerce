@@ -60,6 +60,7 @@ class Favourites(models.Model):
 # Create your models here.
 
 class Orders(models.Model):
+    user = models.ForeignKey('main.User', on_delete=models.CASCADE)
     order_number = models.IntegerField(unique=True)
     products = models.JSONField(default=list)
     payment_status = models.IntegerField(default=0)

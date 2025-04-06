@@ -72,6 +72,11 @@
                 <a class="nav-link me-5" href="/register">Register</a>
               </li>
               {% endif %}
+              {% if user.is_authenticated and user.is_staff %}
+              <li class="nav-item">
+                <a class="nav-link me-5" href="/order_data">Admin Dashboard</a>
+              </li>
+              {% endif %}
 
             </ul>
           </div>
