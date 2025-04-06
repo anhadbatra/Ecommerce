@@ -61,8 +61,66 @@
         </div>
     </div>
 </footer>
+<!-- Toast container -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div id="liveToast" class="toast align-items-center text-white bg-success border-0" role="alert">
+        <div class="d-flex">
+            <div class="toast-body" id="toast-body">
+
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+        </div>
+    </div>
+</div>
+
+{% if messages %}
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+    {% for message in messages %}
+    <div class="toast_server toast align-items-center text-white bg-{{ message.tags|default:'info' }} border-0 mb-2"
+        role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="3000" data-bs-autohide="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                {{ message }}
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                aria-label="Close"></button>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<script>
+    // Auto show all toast messages on page load
+    document.addEventListener('DOMContentLoaded', function () {
+        const toastElements = document.querySelectorAll('.toast_server');
+        toastElements.forEach(toastEl => {
+            new bootstrap.Toast(toastEl).show();
+        });
+    });
+</script>
+{% endif %}
+
 <script src="{% static 'js/jquery-1.11.0.min.js' %}"></script>
 <script src="{% static 'js/plugins.js' %}"></script>
 <script src="{% static 'js/script.js' %}"></script>
+<script>
+    function showToast(message, type = 'success') {
+        const toast = document.getElementById('liveToast');
+        const toastBody = document.getElementById('toast-body');
+
+        // Change background color based on type
+        toast.className = `toast align-items-center text-white bg-${type} border-0`;
+        toastBody.textContent = message;
+
+        const bsToast = new bootstrap.Toast(toast);
+        bsToast.show();
+    }
+    setTimeout(() => {
+        const alerts = document.querySelectorAll('.alert');
+        alerts.forEach(alert => {
+            alert.classList.remove('show');
+        });
+    }, 3000);
+</script>
 </body>
 </html>
