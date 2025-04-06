@@ -1,9 +1,8 @@
 {% include '../header.html' %}
-
 {% block content %}
+
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <script src="https://js.stripe.com/v3/"></script>
@@ -16,17 +15,14 @@
             height: auto;
             border-radius: 4px;
         }
-
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
         }
-
         .cart-container {
             max-width: 600px;
             margin: 0 auto;
         }
-
         .cart-item {
             border-bottom: 1px solid #ddd;
             padding: 10px 0;
@@ -34,23 +30,19 @@
             justify-content: space-between;
             align-items: center;
         }
-
         .error {
             color: red;
             text-align: center;
         }
-
         .empty {
             text-align: center;
             color: #666;
         }
-
         .total {
             font-weight: bold;
             text-align: right;
             margin-top: 10px;
         }
-
         #checkout-button {
             display: block;
             margin: 20px auto 0 auto;
@@ -64,35 +56,32 @@
             cursor: pointer;
             transition: background-color 0.3s ease;
         }
-
         #checkout-button:hover {
             background-color: #218838;
         }
     </style>
 </head>
-
 <body>
     <div class="cart-container">
         <h1>Your Cart</h1>
 
         {% if error %}
-        <p class="error">{{ error }}</p>
+            <p class="error">{{ error }}</p>
         {% endif %}
 
         {% if cart_items %}
-        {% for product_id, details in cart_items.items %}
-        <div class="cart-item product">
-            <img class="product-image" src="{{ details.image }}" alt="{{ details.name }}">
-            <span>{{ details.name }}</span>
-            <span>Quantity: {{ details.quantity }}</span>
-            <span>Price: ${{ details.price }}</span>
-            <span>Total: ${{ details.total_price }}</span>
-        </div>
-        {% endfor %}
-        <p class="total">Total: ${{ total_price }}</p>
-        <button id="checkout-button">Checkout</button>
-        {% else %}
-        <p class="empty">Your cart is empty.</p>
+            {% for product_id, details in cart_items.items %}
+            <div class="cart-item product">
+                <img class="product-image" src="{{ details.image }}" alt="{{ details.name }}">
+                <span>{{ details.name }}</span>
+                <span>Quantity: {{ details.quantity }}</span>
+                <span>Price: ${{ details.price }}</span>
+                <span>Total: ${{ details.total_price }}</span>
+                    <span><button class="remove-btn" data-product-id="{{ product_id }}">Remove</button></span>
+                </div>
+                {% endfor %}
+                <p class="total">Total: ${{ total_price }}</p>
+                <button id="checkout-button">Checkout</button>
         {% endif %}
     </div>
 
@@ -123,8 +112,31 @@
                     });
             });
         }
-    </script>
-</body>
 
+    document.querySelectorAll('.remove-btn').forEach(btn => {
+        btn.addEventListener('click', function () {
+            const productId = this.dataset.productId;
+
+            fetch("/remove-from-cart/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": "{{ csrf_token }}"
+                },
+                body: JSON.stringify({ product_id: productId })
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.status === 'removed') {
+                        location.reload();
+                    } else {
+                        showToast(data.message || "Something went wrong", 'danger');
+                    }
+                });
+        });
+    });
+    </script>
+    {% endblock %}
+    {% include 'footer.html' %}
+</body>
 </html>
-{% endblock %}

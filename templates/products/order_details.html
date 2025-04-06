@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
+    {% include '../header.html' %}
 
+    {% block content %}
 <head>
     <meta charset="UTF-8">
     <title>Order #{{ order.order_number }}</title>
@@ -67,5 +69,6 @@
 
     <a href="/">Return to Homepage</a>
 </body>
-
+{% endblock %}
+{% include 'footer.html' %}
 </html>

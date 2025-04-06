@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Order Confirmation</title>
+</head>
+
+<body style="font-family: Arial, sans-serif;">
+    <h2>Thank you for your order, {{ user.first_name|default:user.email }}!</h2>
+
+    <p>Your order <strong>#{{ order.order_number }}</strong> has been successfully placed.</p>
+
+    <h4>Order Details:</h4>
+    <table border="1" cellpadding="10" cellspacing="0" style="border-collapse: collapse;">
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Qty</th>
+                <th>Price</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in products %}
+            <tr>
+                <td>{{ item.product_name }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>${{ item.price }}</td>
+                <td>${{ item.total_price }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <p style="margin-top: 20px;"><strong>Total Paid:</strong> ${{ order.total_amount }}</p>
+
+    <p>If you have any questions, reply to this email.</p>
+
+    <p>Cheers,<br>The ShoeStore Team</p>
+</body>
+
+</html>
