@@ -9,7 +9,9 @@ import json
 from django.http import JsonResponse
 import stripe
 from django.contrib import messages
-
+from django.core.mail import send_mail
+from django.conf import settings
+from django.template.loader import render_to_string
 
 stripe.api_key =os.environ.get('STRIPE_SECRET_KEY') 
 print("Starts with sk_test_:", stripe.api_key.startswith("sk_test_"))
@@ -193,10 +195,8 @@ class PaymentSuccess(View):
         try:
             session = stripe.checkout.Session.retrieve(session_id)
             payment_intent = stripe.PaymentIntent.retrieve(session.payment_intent)
-
             cart_item = CartItem.objects.get(user=user)
 
-            # Generate new order number
             last_order = Orders.objects.order_by('-timestamp').first()
             order_number = order_number_generation(last_order.order_number if last_order else None)
 
@@ -216,8 +216,8 @@ class PaymentSuccess(View):
                     'total_price': total_price
                 })
 
-            # Save order
-            Orders.objects.create(
+            # ✅ Save and capture the order instance
+            order = Orders.objects.create(
                 order_number=order_number,
                 products=order_items,
                 total_amount=total_amount,
@@ -227,14 +227,31 @@ class PaymentSuccess(View):
                 payment_status=session.payment_status,
                 receipt_email=session.customer_email
             )
+
             # Clear cart
             cart_item.delete()
-            context = {
-                'order': order_number,
-                'products': order_items,  # JSON list
-            }
+
+            # ✅ Render email
+            email_body = render_to_string('products/order_success_email_template.html', {
+                'user': user,
+                'order': order,
+                'products': order_items,
+            })
+
+            send_mail(
+                subject=f"Order Confirmation - #{order.order_number}",
+                message="Thanks for your order!",
+                from_email="artperformtogether@gmail.com",
+                recipient_list=[request.user.email],
+                html_message=email_body
+            )
+
             messages.success(request, "Order Placed Successfully!")
-            return render(request, 'products/order_details.html', context)
+
+            return render(request, 'products/order_details.html', {
+                'order': order,
+                'products': order_items
+            })
 
         except Exception as e:
             return render(request, 'payment_success.html', {'message': f"Error: {str(e)}"})
