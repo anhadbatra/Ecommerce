@@ -6,6 +6,7 @@ from django.contrib.auth import authenticate,login,logout
 from .models import User
 from products.models import Product,CartItem,Favourites
 from modelling.recommendations import recommodation
+import requests , os
 
 class User_Register(View):
     def post(self,request):
@@ -13,12 +14,23 @@ class User_Register(View):
         password = request.POST.get('password')
         first_name = request.POST.get('first_name')
         last_name = request.POST.get('last_name')
+        
         if not all([email_id,password,first_name,last_name]):
             return redirect('/login')
         if User.objects.filter(email=email_id).exists():
             return JsonResponse({'error':'Email ID already exists'},status=404)
-        usr = User.objects.create_user(email=email_id,password=password,first_name=first_name,last_name=last_name)
-        return render(request,'login_register/login.html')
+        recaptcha_response = request.POST.get('g-recaptcha-response')
+        data = {
+            'secret': os.environ.get('recaptcha_secret_key'),
+            'response': recaptcha_response
+        }
+        r = requests.post('https://www.google.com/recaptcha/api/siteverify', data=data)
+        result = r.json()
+        if result['success']:
+            usr = User.objects.create_user(email=email_id,password=password,first_name=first_name,last_name=last_name)
+            return render(request,'login_register/login.html')
+        else:
+            return render(request, 'register.html', {'error': 'Invalid reCAPTCHA. Please try again.'})
     def get(self,request):
         return render(request,'login_register/register.html')
 
