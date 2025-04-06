@@ -1,6 +1,7 @@
 from django.urls import path
 from . import views
 from modelling.prompts import Result
+from visualization.views import ProductVisualisation
 from .views import CheckoutSession, OrderDetailsView, PaymentSuccess, PaymentCancel
 
 urlpatterns = [
@@ -19,4 +20,6 @@ urlpatterns = [
 
     path('order/<int:order_number>/', OrderDetailsView.as_view(), name='order-details'),
 
+    path('add_to_favourites',views.Favourites_product.as_view()),
+    path('order_data',ProductVisualisation.as_view())
 ]

@@ -135,9 +135,10 @@ class CheckoutSession(View):
         try:
             cart_item = CartItem.objects.get(user=user)
             line_items = []
-
+            print("Hello")
             for product_id, quantity in cart_item.products.items():
                 product = Product.objects.get(id=product_id)
+                print(product)
                 line_items.append({
                     "price_data": {
                         "currency": "usd",
@@ -181,6 +182,7 @@ class PaymentSuccess(View):
             order_number = order_number_generation(last_order.order_number if last_order else None)
 
             order_items = []
+            products = []
             total_amount = 0
 
             for product_id, quantity in cart_item.products.items():
@@ -195,11 +197,13 @@ class PaymentSuccess(View):
                     'quantity': quantity,
                     'total_price': total_price
                 })
+                products.append(product_id)
 
             # Save order
             Orders.objects.create(
+                user = request.user,
                 order_number=order_number,
-                products=order_items,
+                products=products,
                 total_amount=total_amount,
                 stripe_payment_intent=session.payment_intent,
                 stripe_customer_id=session.customer,
