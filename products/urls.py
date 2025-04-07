@@ -3,7 +3,7 @@ from . import views
 from modelling.prompts import Result
 from .views import CheckoutSession, MyOrdersView, Order_details_view, PaymentSuccess, PaymentCancel, remove_from_cart_view
 from visualization.views import ProductVisualisation
-from .views import CheckoutSession, OrderDetailsView, PaymentSuccess, PaymentCancel
+from .views import CheckoutSession, PaymentSuccess, PaymentCancel,Order_details_view
 
 urlpatterns = [
     path('products',views.Products.as_view()),
