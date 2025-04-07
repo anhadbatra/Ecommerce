@@ -7,6 +7,7 @@ from .models import User
 from products.models import Product,CartItem,Favourites
 from modelling.recommendations import recommodation
 import requests , os
+from django.conf import settings
 
 class User_Register(View):
     def post(self,request):
@@ -19,18 +20,21 @@ class User_Register(View):
             return redirect('/login')
         if User.objects.filter(email=email_id).exists():
             return JsonResponse({'error':'Email ID already exists'},status=404)
-        recaptcha_response = request.POST.get('g-recaptcha-response')
-        data = {
+        if settings.RECAPTCHA_ENABLED:
+            recaptcha_response = request.POST.get('g-recaptcha-response')
+            data = {
             'secret': os.environ.get('recaptcha_secret_key'),
             'response': recaptcha_response
-        }
-        r = requests.post('https://www.google.com/recaptcha/api/siteverify', data=data)
-        result = r.json()
-        if result['success']:
-            usr = User.objects.create_user(email=email_id,password=password,first_name=first_name,last_name=last_name)
-            return render(request,'login_register/login.html')
+            }
+            r = requests.post('https://www.google.com/recaptcha/api/siteverify', data=data)
+            result = r.json()
+            if result['success']:
+                usr = User.objects.create_user(email=email_id,password=password,first_name=first_name,last_name=last_name)
+                return render(request,'login_register/login.html')
+            else:
+                return render(request, 'register.html', {'error': 'Invalid reCAPTCHA. Please try again.'})
         else:
-            return render(request, 'register.html', {'error': 'Invalid reCAPTCHA. Please try again.'})
+            return render (request,{'status':'Recpatch Done'})
     def get(self,request):
         return render(request,'login_register/register.html')
 

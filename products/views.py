@@ -14,7 +14,6 @@ from django.conf import settings
 from django.template.loader import render_to_string
 
 stripe.api_key =os.environ.get('STRIPE_SECRET_KEY') 
-print("Starts with sk_test_:", stripe.api_key.startswith("sk_test_"))
 class Products(View):
     def post(request):
         color = request.POST.get('color')
@@ -145,19 +144,12 @@ class Favourites_product(View):
                 'status':'added',
                 'message': "Product added to Favourite"
             })
-        
-
-            
-        
-
-        
 class CheckoutSession(View):
     def post(self, request):
         user = request.user
         try:
             cart_item = CartItem.objects.get(user=user)
             line_items = []
-            print("Hello")
             for product_id, quantity in cart_item.products.items():
                 product = Product.objects.get(id=product_id)
                 print(product)
@@ -219,10 +211,9 @@ class PaymentSuccess(View):
                 })
                 products.append(product_id)
 
-
             # Save order
-            Orders.objects.create(
-                user = request.user,
+            order = Orders.objects.create(
+                user=request.user,
                 order_number=order_number,
                 products=products,
                 total_amount=total_amount,
@@ -236,7 +227,6 @@ class PaymentSuccess(View):
             # Clear cart
             cart_item.delete()
 
-    
             email_body = render_to_string('products/order_success_email_template.html', {
                 'user': user,
                 'order': order,
