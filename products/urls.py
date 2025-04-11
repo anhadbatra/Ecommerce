@@ -20,5 +20,6 @@ urlpatterns = [
     path('order/<int:order_number>/', Order_details_view.as_view(), name='order-details'),
     path('my-orders/', MyOrdersView.as_view(), name='my-orders'),
     path('add_to_favourites',views.Favourites_product.as_view()),
-    path('order_data',ProductVisualisation.as_view())
+    path('order_data',ProductVisualisation.as_view()),
+    path('filter_data',views.Products.as_view())
 ]

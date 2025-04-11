@@ -15,19 +15,32 @@ from django.template.loader import render_to_string
 
 stripe.api_key =os.environ.get('STRIPE_SECRET_KEY') 
 class Products(View):
-    def post(request):
-        color = request.POST.get('color')
+    def post(self, request):
         category = request.POST.get('category')
-        if color:
-            product = Product.objects.get(color=color)
+        price_min = request.POST.get('price_min')
+        price_max = request.POST.get('price_max')
+
+        products = Product.objects.all()
+
         if category:
-            product = Product.objects.get(category=category)
-        product_details = {'product_filter':product}
-        return render(request,'products/product_details.html',product_details)
+            products = products.filter(category=category)
+        if price_min:
+            products = products.filter(price__gte=price_min)
+        if price_max:
+            products = products.filter(price__lte=price_max)
+
+        categories = dict(Product._meta.get_field('category').choices)
+        print(products)
+        return render(request, 'products/products.html', {
+            'product': products,
+            'categories': categories
+        })
 
     def get(self,request):
         product = Product.objects.all()
-        products = {'product':product}
+        categories = dict(Product._meta.get_field('category').choices)
+        print(categories)
+        products = {'product':product,'categories':categories}
         return render(request,'products/products.html',products)
 
 class Product_Details(View):
@@ -168,8 +181,8 @@ class CheckoutSession(View):
                 payment_method_types=["card"],
                 line_items=line_items,
                 mode="payment",
-                success_url="http://127.0.0.1:8000/payment-success/" + "?session_id={CHECKOUT_SESSION_ID}",
-                cancel_url="http://127.0.0.1:8000/payment-cancle/",
+                success_url="http://localhost:8000/payment-success/" + "?session_id={CHECKOUT_SESSION_ID}",
+                cancel_url="http://localhost:8000/payment-cancle/",
                 customer_email=user.email,
             )
             print(checkout_session)
@@ -226,22 +239,6 @@ class PaymentSuccess(View):
 
             # Clear cart
             cart_item.delete()
-
-            email_body = render_to_string('products/order_success_email_template.html', {
-                'user': user,
-                'order': order,
-                'products': order_items,
-            })
-
-            send_mail(
-                subject=f"Order Confirmation - #{order.order_number}",
-                message="Thanks for your order!",
-                from_email="artperformtogether@gmail.com",
-                recipient_list=[request.user.email],
-                html_message=email_body
-            )
-
-            messages.success(request, "Order Placed Successfully!")
 
             return render(request, 'products/order_details.html', {
                 'order': order,
