@@ -17,7 +17,7 @@ def prompt_model(data,prompt):
         {product_info}
 
         Answer the following query: "{user_prompt}"
-        Return your answer as a JSON list of product PKs (integers) that satisfy the query.
+        Return your answer as a single JSON list of product PKs (integers) that satisfy the query.
         If no products match, return an empty list: []
         """
         prompt_template = PromptTemplate(input_variables=["product_info", "user_prompt"], template=template)

@@ -34,6 +34,10 @@ RECAPTCHA_ENABLED = not DEBUG
 
 ALLOWED_HOSTS = []
 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_USE_TLS = True
+
 
 AUTH_USER_MODEL = "main.User"
 

@@ -20,21 +20,21 @@ class User_Register(View):
             return redirect('/login')
         if User.objects.filter(email=email_id).exists():
             return JsonResponse({'error':'Email ID already exists'},status=404)
-        if settings.RECAPTCHA_ENABLED:
-            recaptcha_response = request.POST.get('g-recaptcha-response')
-            data = {
+        
+        recaptcha_response = request.POST.get('g-recaptcha-response')
+        data = {
             'secret': os.environ.get('recaptcha_secret_key'),
             'response': recaptcha_response
             }
-            r = requests.post('https://www.google.com/recaptcha/api/siteverify', data=data)
-            result = r.json()
-            if result['success']:
-                usr = User.objects.create_user(email=email_id,password=password,first_name=first_name,last_name=last_name)
-                return render(request,'login_register/login.html')
-            else:
-                return render(request, 'register.html', {'error': 'Invalid reCAPTCHA. Please try again.'})
+        r = requests.post('https://www.google.com/recaptcha/api/siteverify', data=data)
+        result = r.json()
+        if result['success']:
+             usr = User.objects.create_user(email=email_id,password=password,first_name=first_name,last_name=last_name)
+             return render(request,'login_register/login.html')
         else:
-            return render (request,{'status':'Recpatch Done'})
+            return render(request, 'register.html', {'error': 'Invalid reCAPTCHA. Please try again.'})
+        
+            
     def get(self,request):
         return render(request,'login_register/register.html')
 

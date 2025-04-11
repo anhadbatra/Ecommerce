@@ -158,14 +158,15 @@
     <!-- Sidebar Filter -->
     <div class="filter-sidebar">
       <h3>Filters</h3>
-      <form method="get" action="">
+      <form method="post" action="filter_data">
+        {% csrf_token %}
         <div>
           <label for="category">Category:</label>
           <select name="category" id="category">
             <option value="">All Categories</option>
-            {% for category in categories %}
-              <option value="{{ category.id }}">{{ category.name }}</option>
-            {% endfor %}
+            {% for key, value in categories.items %}
+            <option value="{{ key }}">{{ value }}</option>
+          {% endfor %}
           </select>
         </div>
         <div>

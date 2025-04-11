@@ -28,3 +28,5 @@ class UserRegister_Test(TestCase):
             print("Form errors:", response.context['form'].errors)
         self.assertEqual(response.status_code,200)
         self.assertTrue(User.objects.filter(email='test123@gmail.com').exists())
+
+
