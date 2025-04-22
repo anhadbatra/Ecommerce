@@ -8,7 +8,7 @@ index = "product-index"
 
 index_connect = pc.Index(index)
 
-
+embedding_model = OllamaEmbeddings(model="nomic-embed-text") 
 
 def prepare_text(product):
     return f"name:{product.name}.color:{product.color}.price:{product.price}"
