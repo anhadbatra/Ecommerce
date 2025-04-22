@@ -8,10 +8,12 @@ index = "product-index"
 
 index_connect = pc.Index(index)
 
-embedding_model = OllamaEmbeddings(model="nomic-embed-text") 
+
 
 def prepare_text(product):
-    return f"Name:{product.name}.Color:{product.color}.Price:{product.price}"
+    return f"name:{product.name}.color:{product.color}.price:{product.price}"
+
+
 
 def push_into_pinacone():
     product = Product.objects.all()
