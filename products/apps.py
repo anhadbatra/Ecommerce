@@ -9,16 +9,7 @@ class ProductsConfig(AppConfig):
     name = 'products'
 
     def ready(self):
-        from products.models import Product  # Import inside ready() to avoid circular import
+        from modelling.embeddings import push_into_pinacone
+        push_into_pinacone()
 
-        def export_product_data(**kwargs):
-            products = Product.objects.all()
-            print(products)
-            product_data = "\n".join(
-                f"PK: {p.pk}, Name: {p.name}, Price: {p.price}"
-                for p in products
-            )
-            with open(PRODUCT_DATA_FILE, 'w') as f:
-                f.write(product_data)
 
-        post_migrate.connect(export_product_data, sender=self)
