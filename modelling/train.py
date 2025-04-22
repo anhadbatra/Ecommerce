@@ -35,12 +35,23 @@ class Simple_Transformer(nn.Module):
         for pos in range(max_len):
             for i in range(0,d_model,2):
                 angle = pos / (10000 ** ((2 * i) / d_model))
-                positional_matrix[pos,i+1] = math.sin(angle)
+                positional_matrix[pos,i] = math.sin(angle)
                 if i + 1 < d_model:
                     positional_matrix[pos,i+1] = math.cos(angle)
         return positional_matrix
-
-
-
+    @staticmethod   
+    def tokenize(text, word_to_idx, max_len=10):
+        tokens = [word_to_idx.get(word.lower(), word_to_idx["<PAD>"]) for word in text.split()]
+        tokens = tokens[:max_len]
+        while len(tokens) < max_len:
+            tokens.append(word_to_idx["<PAD>"])
+        return torch.tensor(tokens).unsqueeze(0) 
+    @staticmethod
+    def encode_text(text, model, word_to_idx):
+        tokenized_text = Simple_Transformer.tokenize(text, word_to_idx).to(next(model.parameters().device))
+        with torch.no_grad():
+            x = model.embeddings(tokenized_text) * model.scale
+            x = model.pos_encodding[:x.size(1)].to(x.device)
+            
 
 
