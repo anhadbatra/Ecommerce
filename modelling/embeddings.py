@@ -29,3 +29,4 @@ def push_into_pinacone():
         index_connect.upsert(vectors=vectors)
 
 
+
