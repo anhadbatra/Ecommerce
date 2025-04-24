@@ -1,6 +1,6 @@
 from pinecone import Pinecone, ServerlessSpec
 import os 
-from langchain.embeddings import OllamaEmbeddings
+from langchain.embeddings import OllamaEmbeddings,CustomE
 from products.models import Product
 pc = Pinecone(api_key=os.environ.get('pinacone_key'))
 
@@ -8,7 +8,7 @@ index = "product-index"
 
 index_connect = pc.Index(index)
 
-embedding_model = OllamaEmbeddings(model="nomic-embed-text") 
+embedding_model = 
 
 def prepare_text(product):
     return f"name:{product.name}.color:{product.color}.price:{product.price}"

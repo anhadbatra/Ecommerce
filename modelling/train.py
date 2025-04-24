@@ -68,4 +68,4 @@ if __name__ == "__main__":
     )
     tokenzie = model.encode_text("hello",model,word_to_idx)
     print(tokenzie)
-
+    torch.save(model.state_dict(),"embeddings.pth")
