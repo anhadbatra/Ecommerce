@@ -60,7 +60,7 @@ if __name__ == "__main__":
 ]
     model = Simple_Transformer(
         vocab_size,
-        d_model=128, 
+        d_model=768, 
         n_heads=4, 
         n_layers=2, 
         d_ff=512, 
