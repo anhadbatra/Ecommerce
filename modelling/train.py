@@ -60,7 +60,7 @@ if __name__ == "__main__":
 ]
     model = Simple_Transformer(
         vocab_size,
-        d_model=128, 
+        d_model=768, 
         n_heads=4, 
         n_layers=2, 
         d_ff=512, 
@@ -68,4 +68,4 @@ if __name__ == "__main__":
     )
     tokenzie = model.encode_text("hello",model,word_to_idx)
     print(tokenzie)
-
+    torch.save(model.state_dict(),"embeddings.pth")
