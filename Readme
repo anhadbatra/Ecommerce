@@ -80,33 +80,19 @@ Pinecone query (prompt vectors)
 
 🔗 Tech Stack
 
-Area
+Area - Tool
 
-Tool
+Backend - Django + PostgreSQL
 
-Backend
+Frontend - HTML, JS, Bootstrap
 
-Django + PostgreSQL
+Payment Gateway - Stripe API
 
-Frontend
+ML Framework - PyTorch
 
-HTML, JS, Bootstrap
+Vector Database - Pinecone
 
-Payment Gateway
-
-Stripe API
-
-ML Framework
-
-PyTorch
-
-Vector Database
-
-Pinecone
-
-Semantic Search
-
-Custom Transformer
+Semantic Search - Custom Transformer
 
 🛠 Setup
 
