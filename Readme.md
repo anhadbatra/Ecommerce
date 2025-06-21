@@ -119,8 +119,7 @@ $ pip install -r requirements.txt
 $ python manage.py migrate
 $ python manage.py runserver
 
-🧪 Testing
+Screenshot
+![Alt_text](https://github.com/anhadbatra/Ecommerce/blob/main/Screenshot%202025-06-20%20202327.png)
 
-Test recommodation() using Django shell or trigger via user session
 
-Run semantic search via /search/?q=cheap+jackets after Pinecone setup
