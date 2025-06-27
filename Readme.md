@@ -94,18 +94,6 @@ Vector Database - Pinecone
 
 Semantic Search - Custom Transformer
 
-🛠 Setup
-
-Environment
-
-Python 3.10+
-
-Django 4+
-
-PyTorch
-
-Pinecone Python SDK
-
 Quickstart
 
 # Clone the repo
